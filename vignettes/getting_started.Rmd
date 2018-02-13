@@ -1,0 +1,166 @@
+---
+title: "Getting started with the efts R package"
+author: "Jean-Michel Perraud"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting started with the efts R package}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, echo = FALSE, message = FALSE}
+knitr::opts_chunk$set(
+  comment = "#>",
+  error = FALSE,
+  tidy = FALSE
+)
+library(efts)
+```
+
+## Overview
+
+**efts** is an R package to access EFTS data sets stored in netCDF format. It offers 
+convenient functions to access time series, hiding the bug-prone details 
+of netCDF array manipulations. 
+
+EFTS netCDF data sets follow the schema described at 
+[this location](https://wiki.csiro.au/display/wirada/NetCDF+for+Short-Term+Forecasting) at the time of writing.
+
+The package comes with API documentation, as well as the prevent vignette. You can access both navigating via
+
+```
+?efts
+```
+
+## Creating EFTS netCDF files
+
+Perhaps counter to the usual introduction, we will learn to write a EFTS netCDF data set prior to reading it.
+
+Typical EFTS data is multidimensional, and the netCDF schema reflects this. To create a new data set, 
+you need to define these dimensions. To create the information about the main time axis, you can use the 
+`create_time_info` helper function in the package. The following command creates an hourly data set over two days
+
+```{r}
+timeAxisStart <- ISOdate(year=2010, month=08, day=01, hour = 12, min = 0, sec = 0, tz = "UTC")
+timeDimInfo <- create_time_info(from=timeAxisStart, n=48, tStep='hours since', tStepDelta=1L)
+str(timeDimInfo)
+```
+
+Other dimensions are easier to create. Variables are more involved; one way to define several variables is 
+via a data frame. For instance, you can start from a stub such as created by the following:
+
+```{r}
+variable_names <- c('rain_fcast_ens','pet_fcast_ens')
+varDef <- create_variable_definition_dataframe(variable_names=variable_names, longNames = rep('synthetic data', 2))
+str(varDef)
+```
+
+Do note the column names of the data frame `varDef`; the package is picky about these, to comply with the EFTS netCDF data schema.
+
+Let's create a data set with 2 point stations, 3 ensembles and four time step forecast lead.
+
+```{r}
+stationIds <- c(123,456)
+nEns <- 3
+nLead <- 4
+fname <- tempfile() # or something you prefer.
+default_var_attributes <- create_var_attribute_definition()
+snc <- create_efts(fname, timeDimInfo, varDef, stationIds, nc_attributes=default_var_attributes, lead_length=nLead, ensemble_length=nEns)
+```
+
+The default `print` method for this object snc is the same output as objects of class `ncdf4`
+
+```{r}
+snc
+```
+
+`snc` is a type of object that few R aficionados are aware of; this is a reference class. Without entering 
+into unnecessary technical details, this is mostly a design choice done to achieve better memory usage and performance in some contexts. 
+
+The following command displays the main characteristics of this reference object, of class `EftsDataSet`
+Note that you should really use the methods, and not access directly the fields.
+
+```{r}
+str(snc, max.level=2)
+```
+
+You can get to the documentation page for the methods in this class with:
+
+```
+?efts::EftsDataSet
+```
+
+Our EFTS data set object is ready to be populated with data. Let's create synthetic data. 
+The basic idea of the object's methods is to offer intuitive and concise means to get/set ensemble 
+of forecast time series. A method can be called in a syntax that may be unfamiliar to most R users, 
+but similar to most object oriented languages: `theObject$theMethodName(someArgumentsIfAny)`, 
+for instance `snc$get_time_dim()` in our EFTS data set, to retrieve its time axis.
+
+TODO: test, document and demonstrate missing value handling.
+
+```{r}
+set.seed(42)
+td <- snc$get_time_dim()
+for (i in 1:length(td)) {
+	for (station in stationIds) {
+		rain <- 6 * rnorm(nEns*nLead)
+		rain <- matrix(pmax(as.numeric(rain), 0), nrow=nLead) # nEns replicates of a forecast of length nLead
+		pet <- 6.0 + rnorm(nEns*nLead)
+		pet <- matrix(pmax(as.numeric(pet), 0), nrow=nLead)
+		dtime = td[i]
+		snc$put_ensemble_forecasts(rain, variable_name = variable_names[1], identifier = station, start_time = dtime) 
+		snc$put_ensemble_forecasts(pet,  variable_name = variable_names[2], identifier = station, start_time = dtime) 
+	}
+}
+```
+
+## Reading data
+
+Now we can demonstrate how to retrieve data. If you had closed the previous EFTS data set object `snc` and deleted the variable, you'd reopen it for reading with the following command:
+
+```{r, eval=FALSE}
+if (!exists('snc')) snc <- open_efts(fname)
+```
+
+You get the ensemble forecast for a variable (pet in this case) for a point in time with the following command
+
+```{r}
+td <- snc$get_time_dim()
+timeStamp <- td[5] # for instance
+d <- snc$get_ensemble_forecasts(variable_names[2], stationIds[1], start_time=timeStamp)
+str(d)
+```
+
+The object returned is of class `xts`. The package **xts** has been chosen as the default time series structure for **efts**. The rationale is empirical: previous experience with the **xts** in conjunction with **plyr** (note to self: possibly **dplyr** in the future) showed good performance to calculate hydrologic statistics on ensemble of time series.
+
+To quickly visualize it (if the data is not too big), using the function `plot.zoo` has the advantage of stacking the series:
+```{r}
+library(zoo)
+plot.zoo(d)
+```
+
+As of version 0.5-1, there is a convenience function to retrieve the UTC offset of the units of time dimension. Here there is none, hence a duration of zero returned:
+
+```{r}
+paste0( "UTC offset as a string: ", snc$get_utc_offset())
+paste0( "UTC offset as a lubridate duration: ", snc$get_utc_offset(as_string=FALSE))
+```
+
+TODO: 
+
+Close the data set with the following commands:
+
+```{r}
+snc$close()
+rm(snc)
+```
+
+This vignette creates by default a temporary file. This shall be cleaned up by default with:
+
+```{r}
+if(file.exists(fname)) file.remove(fname)
+```
+
+## Related packages
+
