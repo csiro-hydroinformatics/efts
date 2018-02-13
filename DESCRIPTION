@@ -22,5 +22,5 @@ Imports:
 Suggests:
     testthat,
     knitr
-License: GPL-3
+License: MIT
 RoxygenNote: 6.0.1

@@ -1,0 +1,61 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "README-"
+)
+```
+
+# efts <img src="man/figures/logo.png" align="right" />
+
+[![Build Status](https://travis-ci.org/efts/efts.svg?branch=master)](https://travis-ci.org/efts/efts) 
+[![codecov.io](http://codecov.io/github/efts/efts/coverage.svg?branch=master)](http://codecov.io/github/efts/efts?branch=master)
+
+## Overview
+
+The goal of efts is to have high level tools for reading/writing ensemble forecast time series. :
+
+## Installation
+
+```{r, eval = FALSE}
+# Sometime in the future
+install.packages("efts")
+
+# Or the the development version from GitHub:
+# install.packages("devtools")
+devtools::install_github("jmp75/efts")
+```
+
+## Development
+
+roxygenize with
+
+```{r, eval = FALSE}
+library(devtools)
+efts_dir <- '/path/to/efts'
+document(efts_dir)
+build(efts_dir, vignettes = FALSE)
+```
+
+## Getting started
+
+Placeholder section
+
+```{r}
+library(efts)
+```
+
+## Related work
+
+Placeholder section, see whether there is an intersect with:
+
+* https://www.r-pkg.org/pkg/ensemblepp
+* https://www.r-pkg.org/pkg/tsensembler
+* https://www.r-pkg.org/pkg/hyfo
+
