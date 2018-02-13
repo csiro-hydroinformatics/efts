@@ -72,6 +72,7 @@ create_netcdf_time_axis <- function(d, tStep = "hours since", tzoffset) {
 #' plot.zoo(ensFcastRunoff, plot.type='single')
 #' }
 #' @return A EftsDataSet object
+#' @importFrom methods is
 open_efts <- function(ncfile, writein = FALSE) {
   if (is.character(ncfile)) {
     nc <- ncdf4::nc_open(ncfile, readunlim = FALSE, write = writein)
@@ -325,6 +326,7 @@ pad_global_attribute <- function(nc, attribute_name, attribute_value, sep = "\n"
 #' }
 #' @export
 #' @import ncdf4
+#' @importFrom methods new
 #' @return A EftsDataSet object
 create_efts <- function(fname, time_dim_info, data_var_definitions, stations_varnames, station_names, 
   nc_attributes = list(), lead_length = 48, ensemble_length = 50) {

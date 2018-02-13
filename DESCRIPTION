@@ -11,16 +11,17 @@ Description: A package to read and write netCDF Ensemble Forecast Time Series da
     need to muck around with low-level netCDF operations.
 VignetteBuilder: knitr
 Imports:
+    methods,
     utils,
-    ncdf4,
     stringr,
     lubridate,
     magrittr,
     xts,
     plyr,
+    ncdf4,
     udunits2
 Suggests:
     testthat,
     knitr
-License: MIT
+License: MIT + file LICENSE
 RoxygenNote: 6.0.1

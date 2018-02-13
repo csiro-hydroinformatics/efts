@@ -1,12 +1,18 @@
+
+# https://stackoverflow.com/a/17419100  otherwise cannot use setRefClass...
+setOldClass("ncdf4")
+
+
 #' Reference class convenient for access to a netCDF file.
 #'
 #' Reference class convenient for access to a netCDF file. Note for internal implementation that ncdf4 objects are basically lists with a class attribute. 
 #'
-#' @name NetCdfDataSet
-#' @field ncfile the object of class ncdf4
-#' @export NetCdfDataSet
+#' @name NetCdfDataSet-class
+#' @rdname NetCdfDataSet-class
+#' @field ncfile an object of class ncdf4
+#' @export
 #' @exportClass NetCdfDataSet
-NetCdfDataSet <- setRefClass("NetCdfDataSet", fields = "ncfile", methods = list(initialize = function(nc = NULL) {
+NetCdfDataSet <- setRefClass("NetCdfDataSet", fields = list(ncfile="ncdf4"), methods = list(initialize = function(nc = NULL) {
   "Create an object wrapping an ncdf4 object"
   if (!is.null(nc)) stopifnot("ncdf4" %in% class(nc))
   ncfile <<- nc
@@ -20,8 +26,9 @@ NetCdfDataSet <- setRefClass("NetCdfDataSet", fields = "ncfile", methods = list(
 #' Reference class convenient for access to a Ensemble Forecast Time Series in netCDF file.
 #'
 #' @import xts
-#' @name EftsDataSet
-#' @export EftsDataSet
+#' @name EftsDataSet-class
+#' @rdname EftsDataSet-class
+#' @export
 #' @exportClass EftsDataSet
 #' @field time_dim a cached POSIXct vector, the values for the time dimension of the data set.
 #' @field time_zone the time zone for the time dimensions of this data set.
