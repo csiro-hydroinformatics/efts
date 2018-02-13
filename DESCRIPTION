@@ -1,0 +1,26 @@
+Package: efts
+Type: Package
+Title: High-level functions to read and write Ensemble Forecast Time Series data in netCDF
+Version: 0.7.0
+Date: 2018-02-14
+Authors@R: c( person("Jean-Michel", "Perraud", email =
+    "jean-michel.perraud@csiro.au", role = c("aut", "cre")))
+Author: Jean-Michel Perraud [aut, cre]
+Maintainer: Jean-Michel Perraud <per202@csiro.au>
+Description: A package to read and write netCDF Ensemble Forecast Time Series data sets, without the
+    need to muck around with low-level netCDF operations.
+VignetteBuilder: knitr
+Imports:
+    utils,
+    ncdf4,
+    stringr,
+    lubridate,
+    magrittr,
+    xts,
+    plyr,
+    udunits2
+Suggests:
+    testthat,
+    knitr
+License: GPL-3
+RoxygenNote: 6.0.1
