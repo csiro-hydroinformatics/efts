@@ -20,14 +20,12 @@ library(efts)
 
 ## Overview
 
-**efts** is an R package to access EFTS data sets stored in netCDF format. It offers 
-convenient functions to access time series, hiding the bug-prone details 
-of netCDF array manipulations. 
+**efts** is an R package to access ensemble forecast time series stored (EFTS) in netCDF format. It offers 
+convenient functions to access time series, hiding the bug-prone details of netCDF array manipulations. 
 
-EFTS netCDF data sets follow the schema described at 
-[this location](https://wiki.csiro.au/display/wirada/NetCDF+for+Short-Term+Forecasting) at the time of writing.
+EFTS netCDF data sets follow the schema described at [this location](https://github.com/jmp75/efts/docs/netcdf_for_water_forecasting.md) at the time of writing.
 
-The package comes with API documentation, as well as the prevent vignette. You can access both navigating via
+The package comes with API documentation, as well as the present vignette. You can access both navigating via
 
 ```
 ?efts
@@ -35,7 +33,7 @@ The package comes with API documentation, as well as the prevent vignette. You c
 
 ## Creating EFTS netCDF files
 
-Perhaps counter to the usual introduction, we will learn to write a EFTS netCDF data set prior to reading it.
+Perhaps as an unusual introduction, we will learn to write a EFTS netCDF data set prior to reading it.
 
 Typical EFTS data is multidimensional, and the netCDF schema reflects this. To create a new data set, 
 you need to define these dimensions. To create the information about the main time axis, you can use the 
@@ -135,9 +133,9 @@ str(d)
 The object returned is of class `xts`. The package **xts** has been chosen as the default time series structure for **efts**. The rationale is empirical: previous experience with the **xts** in conjunction with **plyr** (note to self: possibly **dplyr** in the future) showed good performance to calculate hydrologic statistics on ensemble of time series.
 
 To quickly visualize it (if the data is not too big), using the function `plot.zoo` has the advantage of stacking the series:
+
 ```{r}
-library(zoo)
-plot.zoo(d)
+zoo::plot.zoo(d)
 ```
 
 As of version 0.5-1, there is a convenience function to retrieve the UTC offset of the units of time dimension. Here there is none, hence a duration of zero returned:
@@ -146,8 +144,6 @@ As of version 0.5-1, there is a convenience function to retrieve the UTC offset 
 paste0( "UTC offset as a string: ", snc$get_utc_offset())
 paste0( "UTC offset as a lubridate duration: ", snc$get_utc_offset(as_string=FALSE))
 ```
-
-TODO: 
 
 Close the data set with the following commands:
 
@@ -161,6 +157,3 @@ This vignette creates by default a temporary file. This shall be cleaned up by d
 ```{r}
 if(file.exists(fname)) file.remove(fname)
 ```
-
-## Related packages
-
