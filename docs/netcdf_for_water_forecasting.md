@@ -129,12 +129,12 @@ Axis label | axis | String | t
 
 The units can also be days or months since 1970-01-01. They are in UTC by default.
 
-*NB#1: Using units of months requires special treatment. When adding months to a given time, the addition method depends on the day of the month of the time units, as follows:*
+__NB#1: Using units of months requires special treatment. When adding months to a given time, the addition method depends on the day of the month of the time units, as follows:__
 
 1. If the day of the month specified in the time units is less than 24, simply add months. E.g. time units are 'months since 1970-02-15 00:00:00.0 +0000'. Adding one month yields a time stamp of 1970-03-15 00:00:00.0 +0000
 1. If the day of month is greater than or equal to 24, the time stamp is calculated by counting back from the end of a given month. E.g. time units are 'months since 1970-02-26 00:00:00.0 +0000'. Adding one month yields a time stamp of 1970-03-29 00:00:00.0 +0000
 
-*NB#2: When data are not forecasts, the first value should indicate over which period the variables are aggregated - i.e., do use values of zero (see Description of time types).*
+__NB#2: When data are not forecasts, the first value should indicate over which period the variables are aggregated - i.e., do use values of zero (see Description of time types).__
 
 ### station_id
 
@@ -425,11 +425,13 @@ Type ID | Description | Example variable
 13*	| climatology data - averaged over the preceding interval | climatology flow
 14*	| climatology data - accumulated since start of forecast | climatology flow
 15*	| climatology data - point value recorded in the preceding interval | climatology max temp
-* NB - please specify the period over which climatology data is calculated and how it is calculated in the global "comment" attribute, as well as any applicable references in the "source" global attribute.
+
+__*NB - please specify the period over which climatology data is calculated and how it is calculated in the global "comment" attribute, as well as any applicable references in the "source" global attribute.__
 
  
 
-Description of data types
+## Description of data types
+
 
 Type ID | Description | Example variable
 --- | --- | --- 
