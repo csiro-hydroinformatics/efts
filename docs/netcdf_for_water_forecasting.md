@@ -2,7 +2,7 @@
 
 ## Foreword
 
-The [present document at the efts repository](https://github.com/jmp75/efts/docs/netcdf_for_water_forecasting.md) is a possibly temporary copy for convenient reference. The point of truth is at [this location](https://confluence.csiro.au/display/wirada/netCDF+for+Water+Forecasting+Specification+v2.0) which is not yet public as of March 2018. 
+The [present document at the efts repository](https://github.com/jmp75/efts/blob/master/docs/netcdf_for_water_forecasting.md) is a possibly temporary copy for convenient reference. The point of truth is at [this location](https://confluence.csiro.au/display/wirada/netCDF+for+Water+Forecasting+Specification+v2.0) which is not yet public as of March 2018. 
 
 Credits for the original document go to James Bennett (CSIRO) 
 

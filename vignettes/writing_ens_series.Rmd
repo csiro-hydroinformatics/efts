@@ -1,10 +1,10 @@
 ---
-title: "Getting started with the efts R package"
+title: "Writing ensemble series with the efts R package"
 author: "Jean-Michel Perraud"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Getting started with the efts R package}
+  %\VignetteIndexEntry{Writing ensemble series with the efts R package}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -20,10 +20,9 @@ library(efts)
 
 ## Overview
 
-**efts** is an R package to access ensemble forecast time series stored (EFTS) in netCDF format. It offers 
-convenient functions to access time series, hiding the bug-prone details of netCDF array manipulations. 
+**efts** is an R package to access ensemble forecast time series stored (EFTS) in netCDF format. It offers convenient functions to access time series, hiding the bug-prone details of netCDF array manipulations. 
 
-EFTS netCDF data sets follow the schema described at [this location](https://github.com/jmp75/efts/docs/netcdf_for_water_forecasting.md) at the time of writing.
+EFTS netCDF data sets follow the schema described at [this location](https://github.com/jmp75/efts/blob/master/docs/netcdf_for_water_forecasting.md) at the time of writing.
 
 The package comes with API documentation, as well as the present vignette. You can access both navigating via
 
