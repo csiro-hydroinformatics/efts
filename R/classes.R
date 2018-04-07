@@ -37,11 +37,13 @@ NetCdfDataSet <- setRefClass("NetCdfDataSet", fields = list(ncfile="ncdf4"), met
 #' @seealso See
 #'    \code{\link{create_efts}} and \code{\link{open_efts}} for examples on how to read or write EFTS netCDF files using this dataset.
 EftsDataSet <- setRefClass("EftsDataSet", contains = "NetCdfDataSet", fields = list(time_dim = "POSIXct", 
-  time_zone = "character", identifiers_dimensions = "list", stations_varname = "character", lead_time_dim_name = "character", 
+  time_zone = "character", identifiers_dimensions = "list", stations_varname = "character", 
+  stations_dim_name = "character", lead_time_dim_name = "character", 
   ensemble_member_dim_name = "character"), methods = list(initialize = function(nc = NULL) {
   callSuper(nc)
   time_dim <<- as.POSIXct(NA)
   time_zone <<- "UTC"
+  stations_dim_name <<- "station"
   stations_varname <<- "station_id"
   lead_time_dim_name <<- "lead_time"
   ensemble_member_dim_name <<- "ens_member"
@@ -156,7 +158,10 @@ EftsDataSet <- setRefClass("EftsDataSet", contains = "NetCdfDataSet", fields = l
   tscount <- splice_named_var(c(1, length(identifiers), 1, length(td)), ncdims)
   rawData <- ncdf4::ncvar_get(ncfile, variable_name, start = tsstart, count = tscount, 
     collapse_degen = FALSE)
-  tsData <- t(rawData)  # [station,time] to [time, station] for xts creation
+  dim_names(rawData) <- ncdims
+  # [station,time] to [time, station] for xts creation
+  # NOTE: why can this not be dimension_id instead of stations_dim_name?
+  tsData <- slice_by_dimname(rawData,c(time_dim_name, stations_dim_name))
   v <- xts(x = tsData, order.by = td, tzone = tz(td))
   colnames(v) <- identifiers
   return(v)

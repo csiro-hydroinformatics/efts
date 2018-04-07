@@ -4,8 +4,17 @@ check_index_found <- function(index_id, identifier, dimension_id) {
       dimension_id, "'"))
 }
 
+stations_dim_name <- "station"
+lead_time_dim_name <- "lead_time"
+time_dim_name <- "time"
+ensemble_member_dim_name <- "ens_member"
+
+get_default_dim_order <- function() {
+  return(c(lead_time_dim_name, stations_dim_name, ensemble_member_dim_name, time_dim_name))
+}
+
 splice_named_var <- function(d, ncdims = character()) {
-  default_order <- c("lead_time", "station", "ens_member", "time")
+  default_order <- get_default_dim_order()
   d <- as.integer(d)
   stopifnot(length(d) == 4)
   stopifnot(is.vector(d))
@@ -17,10 +26,67 @@ splice_named_var <- function(d, ncdims = character()) {
         collapse = ",")))
     } else {
       d <- d[ncdims]
+      names(d) <- ncdims
     }
   }
   return(d)
 }
+
+
+dim_names <- function(x) {
+  attr(x, 'dim_names')
+}
+
+"dim_names<-" <- function(x, value) {
+  d <- dim(x)
+  if(is.array(x)){
+    stopifnot(length(d) == length(value))
+  } else if (is.vector(x)){
+    stopifnot(length(value) == 1)
+  } else { stop('not an array nor a vector - cannot set dim_names')}
+  attr(x, 'dim_names') <- value
+  return(x)
+}
+
+slice_by_dimname <- function(x, subset_dim_names){
+  dimsize_input <- dim(x)
+  dn <- dim_names(x)
+  if(is.null(dn)) stop('the input array must have a valid dim_names attribute')
+  diffdim <- setdiff(subset_dim_names, dn)
+  if (length(diffdim)>0) stop(paste0('Dimension names to slice but not found in array dim names: ', paste(diffdim, collapse=', ')))
+
+  names(dimsize_input) <- dn
+  dropped_dims <- setdiff(dn,subset_dim_names)
+  if( any(dimsize_input[dropped_dims] > 1)) stop('Cannot drop non-degenerate when subsetting')
+
+  w <- match(subset_dim_names,dn)
+  other <- match(setdiff(dn, subset_dim_names),dn)
+
+  x_reordered <- aperm(x, c(w, other))
+
+  new_dim_names <- dn[c(w, other)]
+  new_dim_sizes <- dim(x_reordered)
+
+  y <- drop(x_reordered)
+  new_dim_names <- new_dim_names[new_dim_sizes > 1]
+  dim_names(y) <- new_dim_names
+  return(y)
+}
+
+# Very very basic test, TODO unit testing
+# x <- array(1:48, c(1,2,1,24))
+# dim_names(x) <- letters[1:4]
+# subset_dim_names <- letters[c(2,4)]
+# slice_by_dimname(x,subset_dim_names)
+# subset_dim_names <- letters[c(4,2)]
+# slice_by_dimname(x,subset_dim_names)
+# x <- array(1:24, c(1,1,1,24))
+# dim_names(x) <- letters[1:4]
+# subset_dim_names <- letters[c(2,4)]
+# slice_by_dimname(x,subset_dim_names)
+# subset_dim_names <- letters[c(4,2)]
+# slice_by_dimname(x,subset_dim_names)
+
 
 #' Creates dimensions for a netCDF EFTS data set
 #'
