@@ -148,6 +148,8 @@ put_variable_attributes <- function(data_var_def, nc) {
 #' @param num_stations number of (gauging) stations identifying points in the data set
 #' @param lead_length length of the lead forecasting time series.
 #' @param ensemble_length number of ensembles, i.e. number of forecasts for each point on the main time axis of the data set
+#' @seealso See
+#'    \code{\link{create_efts}} for examples
 create_efts_variables <- function(data_var_def, time_dim_info, num_stations, lead_length, 
   ensemble_length) {
   efts_dims <- create_nc_dims(time_dim_info = time_dim_info, num_stations = num_stations, 
@@ -213,7 +215,7 @@ is_daily_time_step <- function(time_units) {
   isHourly <- charmatch("hours since", time_units)
   isHourly <- ifelse(is.na(isHourly), FALSE, isHourly == 1)
   if (!(isDaily | isHourly)) 
-    stop(paste("Could not detect if hourly or daily - Unit not supported", 
+    stop(paste("Could not detect if hourly or daily - unit not supported:", 
       time_units))
   isDaily
 }

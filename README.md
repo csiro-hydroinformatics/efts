@@ -77,7 +77,7 @@ head(d)
 plot(d[1:48], main="Interpolated rainfall (mm/h)")
 ```
 
-![](docs/images/README-obs_rainfall_plot-1.png)
+![](man/figures/README-obs_rainfall_plot-1.png)
 
 Let's close the rainfall observation data set and look at a data set of ensemble forecast rainfall.
 

@@ -31,6 +31,6 @@ Create a variable definition usable by the function \code{\link{create_efts_vari
 }
 \examples{
 \dontrun{
-create_variable_definition(name='rain_fcast_ens', longname='Rainfall ensemble forecast derived from some prediction', units='mm', missval=-9999.0, precision='double', var_attribute=list(type=2L))
+create_variable_definition(name='rain_fcast_ens', 
 }
 }

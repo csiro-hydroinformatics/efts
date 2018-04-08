@@ -28,3 +28,7 @@ varsDef$location_type='Point'
 str(create_variable_definitions(varsDef))
 }
 }
+\seealso{
+See
+   \code{\link{create_efts}} for examples
+}

@@ -37,7 +37,7 @@ plot.zoo(obsRunoff, plot.type='single')
 ensRunoff <- snc$get_ensemble_series('runoff_ens', stations_varnames[1])
 plot.zoo(ensRunoff, plot.type='single')
 
-ensFcastRunoff <- snc$get_ensemble_forecasts('runoff_fcast_ens',stations_varnames[1], start_time=td[4])
+ensFcastRunoff <- snc$get_ensemble_forecasts('runoff_fcast_ens',
 plot.zoo(ensFcastRunoff, plot.type='single')
 }
 }

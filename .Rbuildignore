@@ -10,8 +10,12 @@
 ^codecov\.yml$
 ^_pkgdown\.yml$
 ^README\.Rmd$
+^README\.html$
 ^README-.*\.png$
 ^docs$
 ^LICENSE\.md$
 ^appveyor\.yml$
 ^TODO\.md$
+docs
+sandpit
+

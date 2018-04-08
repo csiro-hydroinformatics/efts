@@ -33,5 +33,5 @@ netCDF schema, just offered as a convenience.
 }
 \seealso{
 See
-   \code{\link{create_variable_definition}}
+   \code{\link{create_variable_definition}} and \code{\link{create_efts}} for examples
 }

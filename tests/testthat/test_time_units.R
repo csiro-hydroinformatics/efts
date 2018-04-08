@@ -29,18 +29,22 @@ time_dim_info <- create_time_info(from = timeAxisStart, n = 24L, tzoffset = "+10
 doTests <- function() {
   test_that("UTC offset is correctly read from the time dimension unit string", 
     {
+      f <- function(h,m) { 
+        b <- lubridate::origin + lubridate::dhours(as.integer(h)) + lubridate::dminutes(as.integer(m))
+        b - lubridate::origin 
+      }
       # WIRADA https://jira.csiro.au/browse/WIRADA-231
       x <- "hours since 2015-10-04 00:00:00 +1023"
       expect_equal(find_utc_offset(x), "+1023")
-      expect_equal(find_utc_offset(x, FALSE), lubridate::dhours(10) + lubridate::dminutes(23))
+      expect_equal(find_utc_offset(x, FALSE), f(10,23))
       
       x <- "hours since 2015-10-04 00:00:00 -0837"
       expect_equal(find_utc_offset(x), "-0837")
-      expect_equal(find_utc_offset(x, FALSE), -lubridate::dhours(8) - lubridate::dminutes(37))
+      expect_equal(find_utc_offset(x, FALSE), -f(8,37))
       
       x <- "hours since 2015-10-04 00:00:00"
       expect_equal(find_utc_offset(x), "")
-      expect_equal(find_utc_offset(x, FALSE), +lubridate::dhours(0))
+      expect_equal(find_utc_offset(x, FALSE), +f(0,0))
     })
 }  # end doTests
 

@@ -21,3 +21,7 @@ create_efts_variables(data_var_def, time_dim_info, num_stations, lead_length,
 \description{
 Create netCDF variables according to the definition
 }
+\seealso{
+See
+   \code{\link{create_efts}} for examples
+}
