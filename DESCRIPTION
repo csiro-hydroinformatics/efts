@@ -13,7 +13,8 @@ Version: 0.8-0
 Date: 2018-04-08
 Authors@R: c( 
     person("Jean-Michel", "Perraud", email="jean-michel.perraud@csiro.au", role = c("aut","cre")),
-    person("David", "Robertson", role = c("aut"))
+    person("David", "Robertson", role = c("aut")),
+    person("James", "Bennett", role = c("aut"))
     )
 URL: https://github.com/jmp75/efts
 BugReports: https://github.com/jmp75/efts/issues
