@@ -39,8 +39,9 @@ dim_names <- function(x) {
 
 "dim_names<-" <- function(x, value) {
   d <- dim(x)
-  if(is.array(x)){
-    stopifnot(length(d) == length(value))
+  if(is.array(x)) {
+    if(length(d) != length(value)) stop("dim names is not equal to the number of dimensions of the array")
+    if(length(unique(value)) != length(d)) stop("specified dim names are not unique")
   } else if (is.vector(x)){
     stopifnot(length(value) == 1)
   } else { stop('not an array nor a vector - cannot set dim_names')}
@@ -48,14 +49,19 @@ dim_names <- function(x) {
   return(x)
 }
 
-slice_by_dimname <- function(x, subset_dim_names){
+reduce_dimensions <- function(x, subset_dim_names){
   dimsize_input <- dim(x)
   dn <- dim_names(x)
   if(is.null(dn)) stop('the input array must have a valid dim_names attribute')
+  if(length(dn) != length(dimsize_input)) stop('the input array and its dim_names attribute are differing in length')
+
+  names(dimsize_input) <- dn
+  if(missing(subset_dim_names) || is.na(subset_dim_names))
+    subset_dim_names = dn[dimsize_input > 1]
+
   diffdim <- setdiff(subset_dim_names, dn)
   if (length(diffdim)>0) stop(paste0('Dimension names to slice but not found in array dim names: ', paste(diffdim, collapse=', ')))
 
-  names(dimsize_input) <- dn
   dropped_dims <- setdiff(dn,subset_dim_names)
   if( any(dimsize_input[dropped_dims] > 1)) stop('Cannot drop non-degenerate when subsetting')
 
@@ -64,28 +70,21 @@ slice_by_dimname <- function(x, subset_dim_names){
 
   x_reordered <- aperm(x, c(w, other))
 
-  new_dim_names <- dn[c(w, other)]
-  new_dim_sizes <- dim(x_reordered)
+  reordered_dim_names <- dn[c(w, other)]
+  reordered_dim_sizes <- dim(x_reordered)
+
+  new_dim_sizes <- reordered_dim_sizes[1:length(w)]
+  new_dim_names <- reordered_dim_names[1:length(w)]
 
   y <- drop(x_reordered)
-  new_dim_names <- new_dim_names[new_dim_sizes > 1]
+  # We want however to maintain degenerate 
+  # dimensions that have been explicitly asked for, 
+  # and that would have been otherwise dropped
+  y <- array(y, new_dim_sizes)
+
   dim_names(y) <- new_dim_names
   return(y)
 }
-
-# Very very basic test, TODO unit testing
-# x <- array(1:48, c(1,2,1,24))
-# dim_names(x) <- letters[1:4]
-# subset_dim_names <- letters[c(2,4)]
-# slice_by_dimname(x,subset_dim_names)
-# subset_dim_names <- letters[c(4,2)]
-# slice_by_dimname(x,subset_dim_names)
-# x <- array(1:24, c(1,1,1,24))
-# dim_names(x) <- letters[1:4]
-# subset_dim_names <- letters[c(2,4)]
-# slice_by_dimname(x,subset_dim_names)
-# subset_dim_names <- letters[c(4,2)]
-# slice_by_dimname(x,subset_dim_names)
 
 
 #' Creates dimensions for a netCDF EFTS data set

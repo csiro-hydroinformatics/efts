@@ -161,7 +161,7 @@ EftsDataSet <- setRefClass("EftsDataSet", contains = "NetCdfDataSet", fields = l
   dim_names(rawData) <- ncdims
   # [station,time] to [time, station] for xts creation
   # NOTE: why can this not be dimension_id instead of stations_dim_name?
-  tsData <- slice_by_dimname(rawData,c(time_dim_name, stations_dim_name))
+  tsData <- reduce_dimensions(rawData,c(time_dim_name, stations_dim_name))
   v <- xts(x = tsData, order.by = td, tzone = tz(td))
   colnames(v) <- identifiers
   return(v)
