@@ -20,7 +20,6 @@ knitr::opts_chunk$set(
   fig.height=6, 
   dev='png'
 )
-library(efts)
 ```
 
 ## Overview
@@ -35,72 +34,99 @@ The package comes with API documentation, as well as the present vignette. You c
 ?efts
 ```
 
-## 
+## Sample data
+
+The package includes rainfall data for hydrologic modelling of the upper Murray river in Australia, along the border of the states of New South Wales and Victoria. The data is downsized for inclusion in the package but otherwise realistic. 
+
+`efts` opens netCDF data files by wrapping low-level `ncdf4` objects and functions into an R reference object `EftsDataSet`.
 
 ```{r}
+library(efts)
 ext_data <- system.file('extdata', package='efts')
 rain_file <- file.path(ext_data, 'Upper_Murray_sample_rain.nc')
 stopifnot(file.exists(rain_file))
 
 rain_dat <- open_efts(rain_file)
-rain_dat
+class(rain_dat)
 ```
-```{r}
-rain_dat$get_lead_time_count()
-rain_dat$get_station_count()
 
-d <- rain_dat$get_all_series(variable_name = 'rain_der')
-str(d)
-# How do we silence 
-# Warning message:
-# timezone of object (UTC) is different than current timezone (). 
+The default representation via `print` simply uses the one of `ncdf4`, which can be lengthy but remains the best informative overview.
+
+```{r}
+print(rain_dat)
 ```
+
+`rain_dat` has methods to discover and retrieve data in the file. 
+
+```{r}
+cat(sprintf("This rainfall data set has data for %s stations, the lead time dimension is '%s' because this is not forecast data\n", rain_dat$get_station_count(),
+rain_dat$get_lead_time_count()))
+rain_dat$get_variable_names()
+rain_dat$get_variable_dim_names("rain_der")
+```
+
+`rain_der` in this instance has two dimensions, but even if it had been defined as a 3 or 4 dimension data, or in different orders, the method `get_all_series` just does the low-level processing to present a meaninful multivariate `xts` series.
+
+```{r}
+d <- rain_dat$get_all_series(variable_name = 'rain_der')
+head(d)
+```
+
+`xts` may insist on warning that the "timezone of object (UTC) is different than current timezone ().". This is normal and the series is exactly as it should be.
+
 ```{r}
 plot(d[1:48], main="Interpolated rainfall (mm/h)")
 ```
+
+The data set also has quality codes that can be retrieved:
+
 ```{r}
 d_q <- rain_dat$get_all_series(variable_name = 'rain_der_qual')
 plot(d_q, main="Interpolated rainfall quality code")
-
-# Note: the following is not enough as an error msg:
-# > d <- rain_dat$get_all_series()
-# Error: variable_name %in% names(ncfile$var) is not TRUE
-
 ```
+
+Let's close the rainfall observation data set and look at a data set of ensemble forecast rainfall.
+
 ```{r}
 rain_dat$close()
-```
-```{r}
+
 ext_data <- system.file('extdata', package='efts')
 ens_fcast_file <- file.path(ext_data, 'Upper_Murray_sample_ensemble_rain_fcast.nc')
 stopifnot(file.exists(ens_fcast_file))
 rain_fct_ens <- open_efts(ens_fcast_file)
 rain_fct_ens
 ```
+
+
 ```{r}
 all_vars_names <- rain_fct_ens$get_variable_names()
 station_ids <- rain_fct_ens$get_values("station_id")
 variable_names <- "rain_fcast_ens"
 issue_times <- rain_fct_ens$get_time_dim()
 ```
+
+We can retrieve ensemble of forecasts using `get_ensemble_forecasts`, only having to specify high level information such as the variable of interest, the station and the forecast issue time. The object `rain_fct_ens` takes care of the lower level level information and slicing working directly with `ncdf4`.
+
+We'll store ensemble forecasts in a list; in the future `efts` may offer a more convenient structure for multidimensional time series.
+
 ```{r}
 ensfcasts = list()
 ensfcasts[["1"]] <- rain_fct_ens$get_ensemble_forecasts(variable_names[1], station_ids[1], start_time = issue_times[1])
 ensfcasts[["2"]] <- rain_fct_ens$get_ensemble_forecasts(variable_names[1], station_ids[1], start_time = issue_times[2])
+```
 
-# Note: method with signature ‘Duration#ANY’ chosen for function ‘*’,
-#  target signature ‘Duration#array’.
-#  "vector#structure" would also be valid
+```{r}
+demo_efts_plot <- function(index) {
+  d <- ensfcasts[[as.character(index)]]
+  # TODO: would be nice to have the title retrieved, but not realistic for multivariate files
+  dat_desc <- paste("Post Processed Forecasts mm/h",issue_times[index],lubridate::tz(issue_times)) # units: no ylab in plot.xts
+  plot(d[,1:3], main=dat_desc)
+}
 
-d <- ensfcasts[["1"]]
-# TODO: would be nice to have the title retrieved, but not realistic for multivariate files
-dat_desc <- "Post Processed ACCESS-G (APS1) Rainfall Forecasts"
-plot(d[,1:3], main=paste0(dat_desc, " (mm/h)"))
+demo_efts_plot(1)
+```
 
-d <- ensfcasts[["2"]]
-# TODO: would be nice to have the title retrieved, but not realistic for multivariate files
-dat_desc <- "Post Processed ACCESS-G (APS1) Rainfall Forecasts"
-plot(d[,1:3], main=paste0(dat_desc, " (mm/h)"))
-
+```{r}
+demo_efts_plot(2)
 rain_fct_ens$close()
 ```

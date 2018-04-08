@@ -8,17 +8,20 @@ output: github_document
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.path = "README-"
+  fig.path = "docs/images/README-"
 )
 ```
 
-# efts <img src="man/figures/logo.png" align="right" />
+<!--  # efts <img src="man/figures/logo.png" align="right" /> -->
+# efts 
 
-[![Build Status](https://travis-ci.org/efts/efts.svg?branch=master)](https://travis-ci.org/efts/efts) 
+<!-- [![Build Status](https://travis-ci.org/efts/efts.svg?branch=master)](https://travis-ci.org/efts/efts) -->
 
 ## Overview
 
-Plain text files are not well suited to storing the large volumes of data generated for and by ensemble streamflow forecasts with numerical weather prediction models. netCDF is a binary file format developed primarily for climate, ocean and meteorological data. netCDF has traditionally been used to store time slices of gridded data, rather than complete time series of point data. This package is for handling the latter.
+Plain text files are not well suited to storing the large volumes of data generated for and by ensemble streamflow forecasts with numerical weather prediction models. netCDF is a binary file format developed primarily for climate, ocean and meteorological data. netCDF has traditionally been used to store time slices of gridded data, rather than complete time series of point data. **efts** is for handling the latter. 
+
+**efts** is for netCDF data following the [NetCDF for Water Forecasting Conventions v2.0](https://github.com/jmp75/efts/blob/master/docs/netcdf_for_water_forecasting.md)
 
 ## Installation
 
@@ -31,24 +34,46 @@ install.packages("efts")
 devtools::install_github("jmp75/efts")
 ```
 
-## Development
+## Example use
 
-Draft dev notes:
+This is an extract from one of the package vignettes.
 
-```{r, eval = FALSE}
-library(devtools)
-efts_dir <- '/path/to/efts'
-document(efts_dir)
-build(efts_dir, vignettes = FALSE)
+```{r}
+library(efts)
+ext_data <- system.file('extdata', package='efts')
+rain_file <- file.path(ext_data, 'Upper_Murray_sample_rain.nc')
+stopifnot(file.exists(rain_file))
+
+rain_dat <- open_efts(rain_file)
+class(rain_dat)
 ```
 
-## Getting started
+`rain_dat` has methods to discover and retrieve data in the file. 
 
-This is a placeholder section
+```{r}
+cat(sprintf("This rainfall data set has data for %s stations, the lead time dimension is '%s' because this is not forecast data\n", rain_dat$get_station_count(),
+rain_dat$get_lead_time_count()))
+rain_dat$get_variable_names()
+rain_dat$get_variable_dim_names("rain_der")
+```
 
-```{r, eval = FALSE}
-library(efts)
-browseVignettes('efts')
+`rain_der` in this instance has two dimensions, but even if it had been defined as a 3 or 4 dimension data, or in different orders, the method `get_all_series` just does the low-level processing to present a meaninful multivariate `xts` series.
+
+```{r}
+d <- rain_dat$get_all_series(variable_name = 'rain_der')
+head(d)
+```
+
+`xts` may insist on warning that the "timezone of object (UTC) is different than current timezone ().". This is normal and the series is exactly as it should be.
+
+```{r obs_rainfall_plot}
+plot(d[1:48], main="Interpolated rainfall (mm/h)")
+```
+
+Let's close the rainfall observation data set and look at a data set of ensemble forecast rainfall.
+
+```{r}
+rain_dat$close()
 ```
 
 ## Related work

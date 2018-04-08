@@ -12,9 +12,9 @@ Accessing ensemble forecast time series (EFTS) data set stored in netCDF formats
 \tabular{ll}{
 Package: \tab efts\cr
 Type: \tab Package\cr
-Version: \tab 0.7-0\cr
-Date: \tab 2018-02-14\cr
-Release Notes: \tab Initial commit to github \cr
+Version: \tab 0.8-0\cr
+Date: \tab 2018-04-08\cr
+Release Notes: \tab Improve and test subsetting and reordering of multidimensional arrays retrieved via ncdf4 \cr
 License: \tab MIT \cr
 }
 
@@ -23,6 +23,7 @@ See \code{\link{open_efts}} \code{\link{create_efts}} for code examples to read/
 
 \tabular{lll}{
 Version \tab Date \tab Notes \cr
+0.7.0 \tab 2018-02-14 \tab Initial commit to github \cr
 0.6.x \tab 2017 \tab Non public releases of a package originally used only for unit test purposes \cr
 }
 }

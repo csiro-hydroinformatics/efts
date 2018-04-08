@@ -11,7 +11,9 @@ create_netcdf_time_axis(d, tStep = "hours since", tzoffset)
 
 \item{tStep}{the character prefix to put before the date, in the netCDF time axis unit definition.}
 
-\item{tzoffset}{an optional character, the time offset from UTC, e.g. '+1000' for 10 hours ahead of UTC. Can be missing, in which case d must be explicitly a UTC time. Note that the tzoffset completely supersedes the time zone if present.}
+\item{tzoffset}{an optional character, the time offset from UTC, e.g. '+1000' for 10 hours ahead of UTC. 
+Can be missing, in which case itd must be explicitly a UTC time. 
+Note that the tzoffset completely supersedes the time zone if present.}
 }
 \value{
 a character, the axis units to use for the netCDF 'time' dimension

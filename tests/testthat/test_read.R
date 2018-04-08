@@ -33,7 +33,7 @@ doTests <- function() {
     varsDef$type <- 2
     varsDef$dimensions <- "4"
     varsDef$type_description <- "accumulated over the previous time step"
-    varsDef$Location_Type <- "Point"
+    varsDef$location_type <- "Point"
     
     snc <- create_efts(tempNcFname, time_dim_info, create_variable_definitions(varsDef), 
       stations_varnames, lead_length = nLead, ensemble_length = nEns)

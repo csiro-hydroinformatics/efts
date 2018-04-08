@@ -13,9 +13,13 @@ vignette: >
 knitr::opts_chunk$set(
   comment = "#>",
   error = FALSE,
-  tidy = FALSE
+  tidy = FALSE,
+  out.extra='style="display:block; margin: auto"', 
+  fig.align="center", 
+  fig.width=6, 
+  fig.height=6, 
+  dev='png'
 )
-library(efts)
 ```
 
 ## Overview
@@ -39,6 +43,7 @@ you need to define these dimensions. To create the information about the main ti
 `create_time_info` helper function in the package. The following command creates an hourly data set over two days
 
 ```{r}
+library(efts)
 timeAxisStart <- ISOdate(year=2010, month=08, day=01, hour = 12, min = 0, sec = 0, tz = "UTC")
 timeDimInfo <- create_time_info(from=timeAxisStart, n=48, tStep='hours since', tStepDelta=1L)
 str(timeDimInfo)
