@@ -11,6 +11,11 @@
 #'
 #' Accessing ensemble forecast time series (EFTS) data set stored in netCDF formats, without the need for lower-level ncdf4 operations.
 #' See \code{\link{open_efts}} \code{\link{create_efts}} for code examples to read/write files using this package.
+#' 
+#' This work was carried out in the CSIRO Water for Healthy Country National Research Flagship and was 
+#' supported by the Water Information Research and Development Alliance between CSIRO and the Australian 
+#' Bureau of Meteorology. 
+#' 
 #'
 #' \tabular{lll}{
 #' Version \tab Date \tab Notes \cr

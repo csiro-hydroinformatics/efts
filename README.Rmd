@@ -15,25 +15,26 @@ knitr::opts_chunk$set(
 <!--  # efts <img src="man/figures/logo.png" align="right" /> -->
 # efts 
 
+Reading and writting Ensemble Forecast Time Series in netCDF files.
 <!-- [![Build Status](https://travis-ci.org/efts/efts.svg?branch=master)](https://travis-ci.org/efts/efts) -->
 
 ## Overview
 
 Plain text files are not well suited to storing the large volumes of data generated for and by ensemble streamflow forecasts with numerical weather prediction models. netCDF is a binary file format developed primarily for climate, ocean and meteorological data. netCDF has traditionally been used to store time slices of gridded data, rather than complete time series of point data. **efts** is for handling the latter. 
 
-**efts** is for netCDF data following the [NetCDF for Water Forecasting Conventions v2.0](https://github.com/jmp75/efts/blob/master/docs/netcdf_for_water_forecasting.md)
+**efts** is designed to handle netCDF data following the [NetCDF for Water Forecasting Conventions v2.0](https://github.com/jmp75/efts/blob/master/docs/netcdf_for_water_forecasting.md)
 
 ## Installation
 
 ```{r, eval = FALSE}
-# Sometime in the future
+# From CRAN:
 install.packages("efts")
 
 # Or the the development version from GitHub:
 # install.packages("devtools")
 devtools::install_github("jmp75/efts")
 ```
-
+Loading
 ## Example use
 
 This is an extract from one of the package vignettes.
@@ -70,7 +71,7 @@ head(d)
 plot(d[1:48], main="Interpolated rainfall (mm/h)")
 ```
 
-Let's close the rainfall observation data set and look at a data set of ensemble forecast rainfall.
+You should use the `close` method once you are done with accessing the data set object and its underlying netCDF file.
 
 ```{r}
 rain_dat$close()
