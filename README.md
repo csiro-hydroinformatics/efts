@@ -4,7 +4,7 @@
 efts
 ====
 
-Reading and writting Ensemble Forecast Time Series in netCDF files. <!-- [![Build Status](https://travis-ci.org/efts/efts.svg?branch=master)](https://travis-ci.org/efts/efts) -->
+Reading and writing Ensemble Forecast Time Series in netCDF files. <!-- [![Build Status](https://travis-ci.org/efts/efts.svg?branch=master)](https://travis-ci.org/efts/efts) -->
 
 Overview
 --------

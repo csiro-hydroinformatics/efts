@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 <!--  # efts <img src="man/figures/logo.png" align="right" /> -->
 # efts 
 
-Reading and writting Ensemble Forecast Time Series in netCDF files.
+Reading and writing Ensemble Forecast Time Series in netCDF files.
 <!-- [![Build Status](https://travis-ci.org/efts/efts.svg?branch=master)](https://travis-ci.org/efts/efts) -->
 
 ## Overview
