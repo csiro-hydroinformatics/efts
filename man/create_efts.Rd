@@ -13,7 +13,7 @@ create_efts(fname, time_dim_info, data_var_definitions, stations_varnames,
 
 \item{time_dim_info}{a list with the units and values defining the time dimension of the data set}
 
-\item{data_var_definitions}{a data frame, acceptable by \code{\link{create_variable_definitions}}, or list of netcdf variable definitions, e.g. 
+\item{data_var_definitions}{a data frame, acceptable by \code{\link{create_variable_definitions}}, or list of netCDF variable definitions, e.g. 
 \code{list(rain_fcast_ens=list(name='rain_fcast_ens', longname='ECMWF Rainfall ensemble forecasts', units='mm', missval=-9999.0, precision='double', attributes=list(type=2, type_description='accumulated over the preceding interval')))}}
 
 \item{stations_varnames}{station identifiers, coercible to an integer vector (note: may change to be a more flexible character storage)}

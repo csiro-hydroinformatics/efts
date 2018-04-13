@@ -88,7 +88,7 @@ Reference class convenient for access to a Ensemble Forecast Time Series in netC
 
 \item{\code{set_time_zone(tzone_id)}}{Sets the time zone to use for the read time series}
 
-\item{\code{summary()}}{Print a summary of this EFTS netcdf file}
+\item{\code{summary()}}{Print a summary of this EFTS netCDF file}
 }}
 
 \seealso{

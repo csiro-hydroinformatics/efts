@@ -22,7 +22,7 @@ check_is_utc <- function(d) {
 #' @param d an object coercible to a POSIXct
 #' @param tStep the character prefix to put before the date, in the netCDF time axis unit definition.
 #' @param tzoffset an optional character, the time offset from UTC, e.g. '+1000' for 10 hours ahead of UTC. 
-#'   Can be missing, in which case itd must be explicitly a UTC time. 
+#'   Can be missing, in which case it must be explicitly a UTC time. 
 #'   Note that the tzoffset completely supersedes the time zone if present.
 #' @export
 #' @return a character, the axis units to use for the netCDF 'time' dimension
@@ -269,7 +269,7 @@ pad_global_attribute <- function(nc, attribute_name, attribute_value, sep = "\n"
 #'
 #' @param fname file name to create to. The file must not exist already.
 #' @param time_dim_info a list with the units and values defining the time dimension of the data set
-#' @param data_var_definitions a data frame, acceptable by \code{\link{create_variable_definitions}}, or list of netcdf variable definitions, e.g. 
+#' @param data_var_definitions a data frame, acceptable by \code{\link{create_variable_definitions}}, or list of netCDF variable definitions, e.g. 
 #'       \code{list(rain_fcast_ens=list(name='rain_fcast_ens', longname='ECMWF Rainfall ensemble forecasts', units='mm', missval=-9999.0, precision='double', attributes=list(type=2, type_description='accumulated over the preceding interval')))}
 #' @param stations_varnames station identifiers, coercible to an integer vector (note: may change to be a more flexible character storage)
 #' @param station_names optional; names of the stations
@@ -443,7 +443,9 @@ create_efts <- function(fname, time_dim_info, data_var_definitions, stations_var
   result
 }
 
-#' Retrieves the first date of the time dimension from a netcdf file of daily data, given the units found in the netcdf attribute for the time dimension
+#' Retrieves the first date of the time dimension from a netCDF file
+#'
+#' Retrieves the first date of the time dimension from a netCDF file of daily data, given the units found in the netCDF attribute for the time dimension
 #'
 #' @param time_units The string description of the units of the time dimension e.g. 'days since 1980-01-01' or 'hours since 2010-08-01 13:00:00 +0000'
 #' @param time_zone the time zone to use for the returned value.
@@ -472,7 +474,7 @@ get_start_date <- function(time_units, time_zone = "UTC") {
 }
 
 
-#' Retrieves the unit string of the time dimension from a netcdf file
+#' Retrieves the unit string of the time dimension from a netCDF file
 #'
 #' @export
 #' @param ncfile an object of class ncdf4
@@ -482,7 +484,7 @@ get_time_units <- function(ncfile, time_dim_name = "time") {
   return(ncdf4::ncatt_get(ncfile, time_dim_name, "units")$value)
 }
 
-#' Retrieves the time dimension from a netcdf file
+#' Retrieves the time dimension from a netCDF file
 #'
 #' @export
 #' @param ncfile an object of class ncdf4

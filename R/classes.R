@@ -357,7 +357,7 @@ EftsDataSet <- setRefClass("EftsDataSet", contains = "NetCdfDataSet", fields = l
   "Puts all the values in a variable. Should be used only for dimension variables"
   ncdf4::ncvar_put(ncfile, variable_name, x)
 }, summary = function() {
-  "Print a summary of this EFTS netcdf file"
+  "Print a summary of this EFTS netCDF file"
   tAxis <- get_time_dim()  # TODO: may be optimized for less access on disk.
   tspan <- as.character(tAxis[c(1, length(tAxis))])
   cat("Tzone:", as.character(tz(tAxis)), "\n")
@@ -405,7 +405,7 @@ findMatches <- function(pattern, values)
 #'
 #' @name eftsdotDollarNames
 #' @param x A reference class object
-#' @param pattern the regex pattern to search for in potential methods. Default value is posslbly required by some versions of RStudio
+#' @param pattern the regex pattern to search for in potential methods. Default value is possibly required by some versions of RStudio
 #' @importFrom utils .DollarNames
 #' @export
 .DollarNames.EftsDataSet <- function(x, pattern = "") {

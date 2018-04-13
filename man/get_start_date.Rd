@@ -2,7 +2,7 @@
 % Please edit documentation in R/exported_functions.R
 \name{get_start_date}
 \alias{get_start_date}
-\title{Retrieves the first date of the time dimension from a netcdf file of daily data, given the units found in the netcdf attribute for the time dimension}
+\title{Retrieves the first date of the time dimension from a netCDF file}
 \usage{
 get_start_date(time_units, time_zone = "UTC")
 }
@@ -15,7 +15,7 @@ get_start_date(time_units, time_zone = "UTC")
 A POSIXct object, origin of the time dimension as defined
 }
 \description{
-Retrieves the first date of the time dimension from a netcdf file of daily data, given the units found in the netcdf attribute for the time dimension
+Retrieves the first date of the time dimension from a netCDF file of daily data, given the units found in the netCDF attribute for the time dimension
 }
 \examples{
 \dontrun{

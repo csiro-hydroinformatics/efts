@@ -10,7 +10,7 @@
 \arguments{
 \item{x}{A reference class object}
 
-\item{pattern}{the regex pattern to search for in potential methods. Default value is posslbly required by some versions of RStudio}
+\item{pattern}{the regex pattern to search for in potential methods. Default value is possibly required by some versions of RStudio}
 }
 \description{
 method for dollar-tab-completion in R consoles. It may be unnecessary in 
