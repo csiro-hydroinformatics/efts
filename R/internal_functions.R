@@ -101,13 +101,13 @@ reduce_dimensions <- function(x, subset_dim_names){
 #' @seealso See
 #'    \code{\link{create_efts}} for examples
 create_nc_dims <- function(time_dim_info, str_len = 30, lead_length = 1, ensemble_length = 1, num_stations = 1) {
-  time_dim <- ncdf4::ncdim_def("time", units = time_dim_info$units, vals = time_dim_info$values, 
+  time_dim <- ncdf4::ncdim_def(time_dim_name, units = time_dim_info$units, vals = time_dim_info$values, 
     unlim = T, create_dimvar = TRUE, longname = "time")
   station_dim <- ncdf4::ncdim_def("station", units = "", vals = c(1:num_stations), 
     unlim = F, create_dimvar = TRUE, longname = "")
   str_dim <- ncdf4::ncdim_def("str_len", units = "", vals = c(1:str_len), unlim = FALSE, 
     create_dimvar = TRUE, longname = "string length")
-  lead_time_dim <- ncdf4::ncdim_def("lead_time", units = "", vals = 1:lead_length, 
+  lead_time_dim <- ncdf4::ncdim_def(lead_time_dim_name, units = "", vals = 1:lead_length, 
     unlim = F, create_dimvar = FALSE)
   ensemble_dim <- ncdf4::ncdim_def("ens_member", units = "", vals = 1:ensemble_length, 
     unlim = F, create_dimvar = FALSE)
@@ -148,6 +148,8 @@ put_variable_attributes <- function(data_var_def, nc) {
 #' @param num_stations number of (gauging) stations identifying points in the data set
 #' @param lead_length length of the lead forecasting time series.
 #' @param ensemble_length number of ensembles, i.e. number of forecasts for each point on the main time axis of the data set
+#' @seealso See
+#'    \code{\link{create_efts}} for examples
 create_efts_variables <- function(data_var_def, time_dim_info, num_stations, lead_length, 
   ensemble_length) {
   efts_dims <- create_nc_dims(time_dim_info = time_dim_info, num_stations = num_stations, 
@@ -162,7 +164,7 @@ create_efts_variables <- function(data_var_def, time_dim_info, num_stations, lea
     dim = list(str_dim, station_dim), missval = NULL, longname = "station or node name", 
     prec = "char"), station_ids_var = ncdf4::ncvar_def("station_id", units = "", 
     dim = list(station_dim), missval = NULL, longname = "station or node identification code", 
-    prec = "integer"), lead_time_var = ncdf4::ncvar_def("lead_time", units = "hours since time", 
+    prec = "integer"), lead_time_var = ncdf4::ncvar_def(lead_time_dim_name, units = "hours since time", 
     dim = list(lead_time_dim), missval = NULL, longname = "forecast lead time", 
     prec = "integer"), ensemble_var = ncdf4::ncvar_def("ens_member", units = "member id", 
     dim = list(ensemble_dim), missval = NULL, longname = "ensemble member", prec = "integer"), 
@@ -213,7 +215,7 @@ is_daily_time_step <- function(time_units) {
   isHourly <- charmatch("hours since", time_units)
   isHourly <- ifelse(is.na(isHourly), FALSE, isHourly == 1)
   if (!(isDaily | isHourly)) 
-    stop(paste("Could not detect if hourly or daily - Unit not supported", 
+    stop(paste("Could not detect if hourly or daily - unit not supported:", 
       time_units))
   isDaily
 }

@@ -8,11 +8,12 @@
 \method{.DollarNames}{EftsDataSet}(x, pattern = "")
 }
 \arguments{
-\item{x}{???}
+\item{x}{A reference class object}
 
-\item{pattern}{???}
+\item{pattern}{the regex pattern to search for in potential methods. Default value is possibly required by some versions of RStudio}
 }
 \description{
-method for dollar-tab-completion in R consoles. 
- Credits: thanks to http://stackoverflow.com/a/26711603/2752565
+method for dollar-tab-completion in R consoles. It may be unnecessary in 
+the future but such a method was required at some time to at least avoid 
+some issues in RStudio. We may also want to customise matches compared to default reference classes.
 }

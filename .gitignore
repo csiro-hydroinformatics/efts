@@ -32,3 +32,5 @@ vignettes/*.pdf
 *.utf8.md
 *.knit.md
 .vscode/settings.json
+README.html
+TODO.md

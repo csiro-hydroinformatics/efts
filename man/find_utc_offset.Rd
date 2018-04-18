@@ -9,12 +9,25 @@ find_utc_offset(time_units, as_string = TRUE)
 \arguments{
 \item{time_units}{the string to process}
 
-\item{as_string}{a boolean. If true, return the time offset as a character, otherwise return a lubridate duration object.}
+\item{as_string}{a boolean. If true, return the time offset as a character, otherwise return a difftime object.}
 }
 \value{
-the time offset as a character, or as a lubridate duration object.
+the time offset as a character, or as a difftime object.
 }
 \description{
 Finds the UTC offset in a date-time or time axis specification string 
  such as 'hours since 2015-10-04 00:00:00 +1030'
+}
+\examples{
+\dontrun{
+x <- "hours since 2015-10-04 00:00:00 +1023"
+find_utc_offset(x)
+find_utc_offset(x, FALSE)
+x <- "hours since 2015-10-04 00:00:00 -0837"
+find_utc_offset(x)
+find_utc_offset(x, FALSE)    
+x <- "hours since 2015-10-04 00:00:00"
+find_utc_offset(x)
+find_utc_offset(x, FALSE)
+}
 }

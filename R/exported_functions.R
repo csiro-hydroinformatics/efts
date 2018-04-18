@@ -5,15 +5,15 @@
 #' @param d an object coercible to a POSIXct
 #' @export
 #' @return a character, the time zone offset string '+0000'
+#' @importFrom lubridate tz
 #' @examples
 #' \dontrun{
 #' start_time <- ISOdate(year=2010, month=08, day=01, hour = 12, min = 0, sec = 0, tz = 'UTC')
 #' check_is_utc(d=start_time)
 #' }
 check_is_utc <- function(d) {
-  return(any(tz(d) %in% c("UTC", "GMT")))
+  return(any(lubridate::tz(d) %in% c("UTC", "GMT")))
 }
-
 
 #' Create a time axis unit known to work for netCDF
 #'
@@ -21,14 +21,17 @@ check_is_utc <- function(d) {
 #'
 #' @param d an object coercible to a POSIXct
 #' @param tStep the character prefix to put before the date, in the netCDF time axis unit definition.
-#' @param tzoffset an optional character, the time offset from UTC, e.g. '+1000' for 10 hours ahead of UTC. Can be missing, in which case d must be explicitly a UTC time. Note that the tzoffset completely supersedes the time zone if present.
+#' @param tzoffset an optional character, the time offset from UTC, e.g. '+1000' for 10 hours ahead of UTC. 
+#'   Can be missing, in which case it must be explicitly a UTC time. 
+#'   Note that the tzoffset completely supersedes the time zone if present.
 #' @export
 #' @return a character, the axis units to use for the netCDF 'time' dimension
 #' @examples
 #' \dontrun{
 #' start_time <- ISOdate(year=2010, month=08, day=01, hour = 12, min = 0, sec = 0, tz = 'UTC')
 #' create_netcdf_time_axis(d=start_time)
-#' start_time <- ISOdate(year=2015, month=10, day=04, hour = 01, min = 0, sec = 0, tz = 'Australia/Sydney')
+#' start_time <- ISOdate(year=2015, month=10, day=04, hour = 01, 
+#'   min = 0, sec = 0, tz = 'Australia/Sydney')
 #' create_netcdf_time_axis(d=start_time, tzoffset='+1000')
 #' }
 create_netcdf_time_axis <- function(d, tStep = "hours since", tzoffset) {
@@ -68,7 +71,8 @@ create_netcdf_time_axis <- function(d, tStep = "hours since", tzoffset) {
 #' ensRunoff <- snc$get_ensemble_series('runoff_ens', stations_varnames[1])
 #' plot.zoo(ensRunoff, plot.type='single')
 #' 
-#' ensFcastRunoff <- snc$get_ensemble_forecasts('runoff_fcast_ens',stations_varnames[1], start_time=td[4])
+#' ensFcastRunoff <- snc$get_ensemble_forecasts('runoff_fcast_ens',
+#    stations_varnames[1], start_time=td[4])
 #' plot.zoo(ensFcastRunoff, plot.type='single')
 #' }
 #' @return A EftsDataSet object
@@ -96,6 +100,19 @@ open_efts <- function(ncfile, writein = FALSE) {
 #' @return A list with keys units and values
 #' @seealso See
 #'    \code{\link{create_efts}} for examples
+#' @examples
+#' \dontrun{
+#' timeAxisStart <- ISOdate(2015, 10, 4, 0, 0, 0, tz = "Australia/Canberra")
+#' (time_dim_info <- create_time_info(from = timeAxisStart, n = 24L, 
+#'   tStep = "hours since", tStepDelta = 3L, tzoffset = "+1000"))
+#' 
+#' # Note that the time zone information of thes sart date is NOT 
+#' # used by create_time_info; the tzoffset argument takes precedence 
+#' timeAxisStart <- ISOdate(2015, 10, 4, 0, 0, 0, tz = "Australia/Perth")
+#' (time_dim_info <- create_time_info(from = timeAxisStart, n = 24L, 
+#'   tStep = "hours since", tStepDelta = 3L, tzoffset = "+1000"))
+#' 
+#' }
 create_time_info <- function(from, n, tStep = "hours since", tStepDelta = 1L, 
   tzoffset) {
   list(units = create_netcdf_time_axis(d = from, tStep = tStep, tzoffset = tzoffset), 
@@ -108,21 +125,23 @@ create_time_info <- function(from, n, tStep = "hours since", tStepDelta = 1L,
 #'
 #' @param type A data type identifier, as a coded description.
 #' @param type_description description of this data type identifier.
-#' @param locationType a character, type of location, e.g. 'Point'
+#' @param location_type a character, type of location, e.g. 'Point'
 #' @export
 #' @return a list of attributes, describing the type of variable stored
 #' @examples
 #' \dontrun{
-#' vdef <- create_variable_definition(name='rain_fcast_ens', longname='Rainfall ensemble forecast derived from some prediction', 
+#' va <- create_var_attribute_definition(type=2L, 
+#'   type_description='accumulated over the preceding interval', location_type='Point')
+#' vdef <- create_variable_definition(name='rain_fcast_ens', 
+#'   longname='Rainfall ensemble forecast derived from some prediction', 
 #'   units='mm', missval=-9999.0, precision='double', 
-#'   var_attribute=create_var_attribute_definition(type=2L, type_description='accumulated over the preceding interval', locationType='Point')
-#' )
-#'   
+#'   var_attribute=va)
 #' }
 create_var_attribute_definition <- function(type = 2L, type_description = "accumulated over the preceding interval", 
-  locationType = "Point") {
-  list(type = type, type_description = type_description, Location_Type = locationType)
+  location_type = "Point") {
+  list(type = type, type_description = type_description, location_type = location_type)
 }
+
 
 
 #' Create a variable definition
@@ -140,7 +159,9 @@ create_var_attribute_definition <- function(type = 2L, type_description = "accum
 #' @return a list 
 #' @examples
 #' \dontrun{
-#' create_variable_definition(name='rain_fcast_ens', longname='Rainfall ensemble forecast derived from some prediction', units='mm', missval=-9999.0, precision='double', var_attribute=list(type=2L))
+#' create_variable_definition(name='rain_fcast_ens', 
+#    longname='Rainfall ensemble forecast derived from some prediction', units='mm', 
+#    missval=-9999.0, precision='double', var_attribute=list(type=2L))
 #' }
 create_variable_definition <- function(name, longname = "", units = "mm", missval = -9999, 
   precision = "double", dim_type = "4", var_attribute = create_var_attribute_definition()) {
@@ -168,7 +189,7 @@ create_variable_definition <- function(name, longname = "", units = "mm", missva
 #' @export
 #' @return a data frame 
 #' @seealso See
-#'    \code{\link{create_variable_definition}}
+#'    \code{\link{create_variable_definition}} and \code{\link{create_efts}} for examples
 create_variable_definition_dataframe <- function(variable_names, longNames, units = "mm", missval = -9999, 
   precision = "double", dimensions = "4", var_attribute = create_var_attribute_definition()) {
   varsDef <- data.frame(name = variable_names, stringsAsFactors = FALSE)
@@ -179,7 +200,7 @@ create_variable_definition_dataframe <- function(variable_names, longNames, unit
   varsDef$dimensions <- dimensions
   varsDef$type <- var_attribute$type
   varsDef$type_description <- var_attribute$type_description
-  varsDef$Location_Type <- var_attribute$Location_Type
+  varsDef$location_type <- var_attribute$location_type
   return(varsDef)
 }
 
@@ -187,9 +208,11 @@ create_variable_definition_dataframe <- function(variable_names, longNames, unit
 #'
 #' Given a data frame as input, create a list of variable definitions usable by the function \code{\link{create_efts_variables}} to create netCDF variables.
 #'
-#' @param dframe a data frame, one line is one variable definition. Must have at least the following column names: 'name', 'longname', 'units', 'missval', 'precision', 'type', 'type_description', 'Location_Type'
+#' @param dframe a data frame, one line is one variable definition. Must have at least the following column names: 'name', 'longname', 'units', 'missval', 'precision', 'type', 'type_description', 'location_type'
 #' @export
 #' @return a list of length equal to the number of rows in the input data frame
+#' @seealso See
+#'    \code{\link{create_efts}} for examples
 #' @examples
 #' \dontrun{
 #' varsDef = data.frame(name=letters[1:3], stringsAsFactors=FALSE)
@@ -199,7 +222,7 @@ create_variable_definition_dataframe <- function(variable_names, longNames, unit
 #' varsDef$precision='double'
 #' varsDef$type=2
 #' varsDef$type_description='accumulated over the previous time step'
-#' varsDef$Location_Type='Point'
+#' varsDef$location_type='Point'
 #' str(create_variable_definitions(varsDef))
 #' }
 create_variable_definitions <- function(dframe) {
@@ -208,7 +231,7 @@ create_variable_definitions <- function(dframe) {
     create_variable_definition(name = varDef[["name"]], longname = varDef[["longname"]], 
       units = varDef[["units"]], missval = varDef[["missval"]], precision = varDef[["precision"]], 
       dim_type = varDef[["dimensions"]], var_attribute = create_var_attribute_definition(type = varDef[["type"]], 
-        type_description = varDef[["type_description"]], locationType = varDef[["Location_Type"]]))
+        type_description = varDef[["type_description"]], location_type = varDef[["location_type"]]))
   }  # f
   plyr::dlply(.data = dframe, .variables = "rownum", .fun = f)
 }
@@ -246,7 +269,7 @@ pad_global_attribute <- function(nc, attribute_name, attribute_value, sep = "\n"
 #'
 #' @param fname file name to create to. The file must not exist already.
 #' @param time_dim_info a list with the units and values defining the time dimension of the data set
-#' @param data_var_definitions a data frame, acceptable by \code{\link{create_variable_definitions}}, or list of netcdf variable definitions, e.g. 
+#' @param data_var_definitions a data frame, acceptable by \code{\link{create_variable_definitions}}, or list of netCDF variable definitions, e.g. 
 #'       \code{list(rain_fcast_ens=list(name='rain_fcast_ens', longname='ECMWF Rainfall ensemble forecasts', units='mm', missval=-9999.0, precision='double', attributes=list(type=2, type_description='accumulated over the preceding interval')))}
 #' @param stations_varnames station identifiers, coercible to an integer vector (note: may change to be a more flexible character storage)
 #' @param station_names optional; names of the stations
@@ -255,7 +278,7 @@ pad_global_attribute <- function(nc, attribute_name, attribute_value, sep = "\n"
 #' @param ensemble_length number of ensembles, i.e. number of forecasts for each point on the main time axis of the data set
 #' @examples
 #' \dontrun{
-#' fname <- 'f:/tmp/f.nc'
+#' fname <- '~/tmp/f.nc'
 #' stations_varnames <- c(123,456)
 #' nEns <- 3
 #' nLead <- 4
@@ -269,12 +292,14 @@ pad_global_attribute <- function(nc, attribute_name, attribute_value, sep = "\n"
 #' # dimensions '3' ==> [station,ens_member,time]   
 #' # dimensions '2' ==> [station,time]   
 #' 
-#' variable_names <- c('var1_fcast_ens','var2_fcast_ens', 'var1_obs', 'var2_obs', 'var1_ens','var2_ens')
-#' varDef <- create_variable_definition_dataframe(variable_names=variable_names, longNames = paste(variable_names, 'synthetic data'))
+#' variable_names <- c('var1_fcast_ens','var2_fcast_ens', 'var1_obs', 
+#'   'var2_obs', 'var1_ens','var2_ens')
+#' varDef <- create_variable_definition_dataframe(variable_names=variable_names, 
+#'   longNames = paste(variable_names, 'synthetic data'))
 #' varDef$dimensions <- c('4','4','2','2','3','3')
 #' 
-#' snc <- create_efts(fname, time_dim_info, varDef, stations_varnames, nc_attributes=create_var_attribute_definition(), lead_length=nLead, ensemble_length=nEns)
-#' 
+#' snc <- create_efts(fname, time_dim_info, varDef, stations_varnames, 
+#'   nc_attributes=create_var_attribute_definition(), lead_length=nLead, ensemble_length=nEns)
 #' 
 #' # Following is code that was used to create unit tests for EFTS.
 #' # This is kept in this example to provide sample on now to write data of various dimension.
@@ -296,8 +321,10 @@ pad_global_attribute <- function(nc, attribute_name, attribute_value, sep = "\n"
 #'     var1Values <- i + 0.1*j + m
 #'     var2Values <- 2*var1Values
 #'     dtime = td[i]
-#'     snc$put_ensemble_forecasts(var1Values, variable_name = variable_names[1], identifier = station, start_time = dtime)
-#'     snc$put_ensemble_forecasts(var2Values, variable_name = variable_names[2], identifier = station, start_time = dtime)
+#'     snc$put_ensemble_forecasts(var1Values, variable_name = variable_names[1], 
+#'        identifier = station, start_time = dtime)
+#'     snc$put_ensemble_forecasts(var2Values, variable_name = variable_names[2], 
+#'        identifier = station, start_time = dtime)
 #'   }
 #' }
 #' 
@@ -315,7 +342,8 @@ pad_global_attribute <- function(nc, attribute_name, attribute_value, sep = "\n"
 #' 
 #'   var5Xts <- matrix(rep(1:nEns, each=nTimeSteps) + timeSteps + 0.1*j, ncol=nEns)
 #' 
-#'   var5Values <- t(var5Xts) # [time,ens_member] to [ens_member,time], as expected by put_ensemble_series
+#'   # [time,ens_member] to [ens_member,time], as expected by put_ensemble_series
+#'   var5Values <- t(var5Xts) 
 #'   var6Values <- 0.25 * var5Values
 #' 
 #'   station <- stations_varnames[j]
@@ -326,6 +354,7 @@ pad_global_attribute <- function(nc, attribute_name, attribute_value, sep = "\n"
 #' }
 #' @export
 #' @import ncdf4
+#' @importFrom utils packageDescription
 #' @importFrom methods new
 #' @return A EftsDataSet object
 create_efts <- function(fname, time_dim_info, data_var_definitions, stations_varnames, station_names, 
@@ -373,17 +402,17 @@ create_efts <- function(fname, time_dim_info, data_var_definitions, stations_var
   createSchema <- function() {
     lapply(data_var_definitions, put_variable_attributes, nc)
     datenow <- Sys.time()
-    ncdf4::ncatt_put(nc, "time", "standard_name", "time")
-    ncdf4::ncatt_put(nc, "time", "time_standard", "UTC")
-    ncdf4::ncatt_put(nc, "time", "axis", "t")
+    ncdf4::ncatt_put(nc, time_dim_name, "standard_name", time_dim_name)
+    ncdf4::ncatt_put(nc, time_dim_name, "time_standard", "UTC")
+    ncdf4::ncatt_put(nc, time_dim_name, "axis", "t")
     ncdf4::ncatt_put(nc, "ens_member", "standard_name", "ens_member")
     ncdf4::ncatt_put(nc, "ens_member", "axis", "u")
-    ncdf4::ncatt_put(nc, "lead_time", "standard_name", "lead_time")
-    ncdf4::ncatt_put(nc, "lead_time", "axis", "v")
+    ncdf4::ncatt_put(nc, lead_time_dim_name, "standard_name", "lead_time")
+    ncdf4::ncatt_put(nc, lead_time_dim_name, "axis", "v")
     ncdf4::ncatt_put(nc, "lat", "axis", "y")
     ncdf4::ncatt_put(nc, "lon", "axis", "x")
-    ncdf4::ncatt_put(nc, 0, "STF_convention_version", 1)
-    ncdf4::ncatt_put(nc, 0, "STF_nc_spec", "https://wiki.csiro.au/display/wirada/NetCDF+for+EFTS")
+    ncdf4::ncatt_put(nc, 0, "STF_convention_version", 2)
+    ncdf4::ncatt_put(nc, 0, "STF_nc_spec", "https://github.com/jmp75/efts/blob/master/docs/netcdf_for_water_forecasting.md")
     ncdf4::ncatt_put(nc, 0, "history", paste(format(datenow, "%Y-%m-%d %H:%M:%S %Z", 
       tz = "GMT", usetz = F), "file created with R package efts", packageDescription("efts")$Version, 
       "-", Sys.info()[c("sysname", "release", "effective_user")] %>% infoList))
@@ -392,7 +421,7 @@ create_efts <- function(fname, time_dim_info, data_var_definitions, stations_var
       pad_global_attribute(nc, k, nc_attributes[k])
     }
     ncdf4::ncvar_put(nc, "station_id", stations_varnames)
-    ncdf4::ncvar_put(nc, "lead_time", 0:(lead_length - 1))
+    ncdf4::ncvar_put(nc, lead_time_dim_name, 0:(lead_length - 1))
     ncdf4::ncvar_put(nc, "ens_member", 1:ensemble_length)
     if (hasStationNames) {
       ncdf4::ncvar_put(nc, "station_name", station_names)
@@ -414,14 +443,24 @@ create_efts <- function(fname, time_dim_info, data_var_definitions, stations_var
   result
 }
 
-#' Retrieves the first date of the time dimension from a netcdf file of daily data, given the units found in the netcdf attribute for the time dimension
+#' Retrieves the first date of the time dimension from a netCDF file
+#'
+#' Retrieves the first date of the time dimension from a netCDF file of daily data, given the units found in the netCDF attribute for the time dimension
 #'
 #' @param time_units The string description of the units of the time dimension e.g. 'days since 1980-01-01' or 'hours since 2010-08-01 13:00:00 +0000'
 #' @param time_zone the time zone to use for the returned value.
 #' @export
-#' @import udunits2
+#' @importFrom udunits2 ud.convert
 #' @import lubridate
 #' @return A POSIXct object, origin of the time dimension as defined
+#' @examples
+#' \dontrun{
+#' x <- "hours since 2015-10-04 00:00:00 +1023"
+#' get_start_date(x)
+#' get_start_date(x,time_zone = 'UTC')
+#' get_start_date(x,time_zone = 'Australia/Perth')
+#' get_start_date(x,time_zone = 'Australia/Canberra')
+#' }
 get_start_date <- function(time_units, time_zone = "UTC") {
   refDate <- lubridate::origin  # 
   class(refDate) <- c("POSIXct", "POSIXt")  # workaround what I think is a lubridate bug; try origin + days(1)  and its effect, visibly because of class ordering on origin.
@@ -434,17 +473,8 @@ get_start_date <- function(time_units, time_zone = "UTC") {
   return(startDate)
 }
 
-# get_utc_offset <- function(time_units) { refDate <- lubridate::origin #
-# class(refDate) <- c( 'POSIXct', 'POSIXt' ) # workaround what I think is a
-# lubridate bug; try origin + days(1) and its effect, visibly because of
-# class ordering on origin.  isDaily <- is_daily_time_step(time_units)
-# refDateUnits <- paste( ifelse(isDaily, 'days', 'hours'), 'since 1970-01-01
-# 00:00:00 +0000') offsetSinceRef <- udunits2::ud.convert( 0, time_units,
-# refDateUnits ) offsetFun <- get_time_step_function(time_units) startDateUtc <-
-# refDate+offsetFun(offsetSinceRef) startDate <-
-# lubridate::with_tz(startDateUtc, time_zone) return(startDate) }
 
-#' Retrieves the unit string of the time dimension from a netcdf file
+#' Retrieves the unit string of the time dimension from a netCDF file
 #'
 #' @export
 #' @param ncfile an object of class ncdf4
@@ -454,7 +484,7 @@ get_time_units <- function(ncfile, time_dim_name = "time") {
   return(ncdf4::ncatt_get(ncfile, time_dim_name, "units")$value)
 }
 
-#' Retrieves the time dimension from a netcdf file
+#' Retrieves the time dimension from a netCDF file
 #'
 #' @export
 #' @param ncfile an object of class ncdf4
@@ -469,10 +499,19 @@ get_time_dimension <- function(ncfile, time_dim_name = "time", time_zone = "UTC"
   startDate + offsetFun(timeValues)
 }
 
+#' @importFrom stringr str_sub
 offset_as_duration <- function(delta) {
   h <- stringr::str_sub(delta, 1L, 2L)  # 10
   m <- stringr::str_sub(delta, 3L, 4L)  # 30
   return((lubridate::dhours(as.integer(h)) + lubridate::dminutes(as.integer(m))))
+}
+
+#' @importFrom stringr str_sub
+offset_as_difftime <- function(delta) {
+  h <- stringr::str_sub(delta, 1L, 2L)  # 10
+  m <- stringr::str_sub(delta, 3L, 4L)  # 30
+  b <- lubridate::origin + lubridate::dhours(as.integer(h)) + lubridate::dminutes(as.integer(m))
+  b - lubridate::origin
 }
 
 #' Finds the UTC offset in a date-time string
@@ -481,9 +520,22 @@ offset_as_duration <- function(delta) {
 #'  such as 'hours since 2015-10-04 00:00:00 +1030'
 #'
 #' @param time_units the string to process
-#' @param as_string a boolean. If true, return the time offset as a character, otherwise return a lubridate duration object.
-#' @return the time offset as a character, or as a lubridate duration object.
+#' @param as_string a boolean. If true, return the time offset as a character, otherwise return a difftime object.
+#' @return the time offset as a character, or as a difftime object.
 #' @export
+#' @examples
+#' \dontrun{
+#' x <- "hours since 2015-10-04 00:00:00 +1023"
+#' find_utc_offset(x)
+#' find_utc_offset(x, FALSE)
+#' x <- "hours since 2015-10-04 00:00:00 -0837"
+#' find_utc_offset(x)
+#' find_utc_offset(x, FALSE)    
+#' x <- "hours since 2015-10-04 00:00:00"
+#' find_utc_offset(x)
+#' find_utc_offset(x, FALSE)
+#' }
+
 find_utc_offset <- function(time_units, as_string = TRUE) {
   # TODO: there may be a smarter way using udunits to determine the offset,
   # but not trivial either.
@@ -495,7 +547,7 @@ find_utc_offset <- function(time_units, as_string = TRUE) {
     if (as_string) {
       return(paste0("+", delta))
     } else {
-      return(+offset_as_duration(delta))
+      return(+offset_as_difftime(delta))
     }
   }
   x <- stringr::str_split(time_units, "[\\-]")[[1]]
@@ -506,14 +558,14 @@ find_utc_offset <- function(time_units, as_string = TRUE) {
     if (as_string) {
       return(paste0("-", delta))
     } else {
-      return(-offset_as_duration(delta))
+      return(-offset_as_difftime(delta))
     }
   } else {
     # length(x) < 4 : no offset detected
     if (as_string) {
       return("")
     } else {
-      return(lubridate::dhours(0))
+      return(lubridate::origin - lubridate::origin)
     }
   }
 }

@@ -11,7 +11,9 @@ create_netcdf_time_axis(d, tStep = "hours since", tzoffset)
 
 \item{tStep}{the character prefix to put before the date, in the netCDF time axis unit definition.}
 
-\item{tzoffset}{an optional character, the time offset from UTC, e.g. '+1000' for 10 hours ahead of UTC. Can be missing, in which case d must be explicitly a UTC time. Note that the tzoffset completely supersedes the time zone if present.}
+\item{tzoffset}{an optional character, the time offset from UTC, e.g. '+1000' for 10 hours ahead of UTC. 
+Can be missing, in which case it must be explicitly a UTC time. 
+Note that the tzoffset completely supersedes the time zone if present.}
 }
 \value{
 a character, the axis units to use for the netCDF 'time' dimension
@@ -23,7 +25,8 @@ Create a time axis unit known to work for netCDF
 \dontrun{
 start_time <- ISOdate(year=2010, month=08, day=01, hour = 12, min = 0, sec = 0, tz = 'UTC')
 create_netcdf_time_axis(d=start_time)
-start_time <- ISOdate(year=2015, month=10, day=04, hour = 01, min = 0, sec = 0, tz = 'Australia/Sydney')
+start_time <- ISOdate(year=2015, month=10, day=04, hour = 01, 
+  min = 0, sec = 0, tz = 'Australia/Sydney')
 create_netcdf_time_axis(d=start_time, tzoffset='+1000')
 }
 }

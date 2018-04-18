@@ -5,7 +5,11 @@ setOldClass("ncdf4")
 
 #' Reference class convenient for access to a netCDF file.
 #'
-#' Reference class convenient for access to a netCDF file. Note for internal implementation that ncdf4 objects are basically lists with a class attribute. 
+#' Reference class convenient for access to a netCDF file. 
+#' Note for internal implementation that ncdf4 objects are 
+#' basically lists with a class attribute. This class [NetCdfDataSet-class] 
+#' is used as a parent class to the [EftsDataSet-class] class 
+#' but may be reused and expanded for other types of netCDF data. 
 #'
 #' @name NetCdfDataSet-class
 #' @rdname NetCdfDataSet-class
@@ -181,7 +185,7 @@ EftsDataSet <- setRefClass("EftsDataSet", contains = "NetCdfDataSet", fields = l
 }, get_time_dim = function() {
   "Gets the time dimension variable as a vector of date-time stamps"
   # if(is.na(time_dim[1]))
-  time_dim <<- get_time_dimension(ncfile, "time", time_zone)
+  time_dim <<- get_time_dimension(ncfile, time_dim_name, time_zone)
   time_dim
 }, get_ensemble_size = function() {
   "Length of the ensemble size dimension"
@@ -201,7 +205,7 @@ EftsDataSet <- setRefClass("EftsDataSet", contains = "NetCdfDataSet", fields = l
   identifiers_dimensions[[variable_name]]
 }, index_for_time = function(dateTime) {
   "Gets the index at which a date-time is found in the main time axis of this data set"
-  timeAxis <- get_time_dimension(ncfile, "time", time_zone)
+  timeAxis <- get_time_dimension(ncfile, time_dim_name, time_zone)
   if (is.na(dateTime)) dateTime <- timeAxis[1]
   dateTime <- as.POSIXct(dateTime)  # WARN: time zones ambiguity if the argument is not fully TZ qualified
   
@@ -242,11 +246,11 @@ EftsDataSet <- setRefClass("EftsDataSet", contains = "NetCdfDataSet", fields = l
   indTime <- index_for_time(start_time)
   if (indTime > length(td)) {
     tu <- get_time_unit()
-    timeVal1 <- ncdf4::ncvar_get(ncfile, "time", start = c(1), count = c(1))
+    timeVal1 <- ncdf4::ncvar_get(ncfile, time_dim_name, start = c(1), count = c(1))
     deltat <- (difftime(td[2], td[1], units = tu))
     outtime <- indTime * deltat
     if (timeVal1 == 0) outtime <- (indTime - 1) * deltat
-    ncdf4::ncvar_put(ncfile, "time", outtime, start = c(indTime), count = c(1))
+    ncdf4::ncvar_put(ncfile, time_dim_name, outtime, start = c(indTime), count = c(1))
   }
   if (is.array(x)) {
     # float rain_fcast_ens[lead_time,station,ens_member,time]
@@ -264,7 +268,7 @@ EftsDataSet <- setRefClass("EftsDataSet", contains = "NetCdfDataSet", fields = l
   "Puts a single ensemble member forecasts for all stations into a netCDF file"
   # TODO: review intent and purpose
   stopifnot(variable_name %in% names(ncfile$var))
-  td <- get_time_dimension(ncfile, "time", time_zone)
+  td <- get_time_dimension(ncfile, time_dim_name, time_zone)
   # td <- get_time_dim()
   if (is.na(start_time)) start_time <- td[1]
   nEns <- get_ensemble_size()
@@ -274,7 +278,7 @@ EftsDataSet <- setRefClass("EftsDataSet", contains = "NetCdfDataSet", fields = l
   indTime <- index_for_time(start_time)
   if (indTime > length(td)) {
     tu <- get_time_unit()
-    timeVal1 <- ncdf4::ncvar_get(ncfile, "time", start = c(1), count = c(1))
+    timeVal1 <- ncdf4::ncvar_get(ncfile, time_dim_name, start = c(1), count = c(1))
     if (length(td) > 1) {
       deltat <- (difftime(td[2], td[1], units = tu))
     } else {
@@ -282,7 +286,7 @@ EftsDataSet <- setRefClass("EftsDataSet", contains = "NetCdfDataSet", fields = l
     }
     outtime <- indTime * deltat
     if (timeVal1 == 0) outtime <- (indTime - 1) * deltat
-    ncdf4::ncvar_put(ncfile, "time", outtime, start = c(indTime), count = c(1))
+    ncdf4::ncvar_put(ncfile, time_dim_name, outtime, start = c(indTime), count = c(1))
     ncdf4::nc_sync(ncfile)
   }
   ltsize <- nrow(x)
@@ -353,7 +357,7 @@ EftsDataSet <- setRefClass("EftsDataSet", contains = "NetCdfDataSet", fields = l
   "Puts all the values in a variable. Should be used only for dimension variables"
   ncdf4::ncvar_put(ncfile, variable_name, x)
 }, summary = function() {
-  "Print a summary of this EFTS netcdf file"
+  "Print a summary of this EFTS netCDF file"
   tAxis <- get_time_dim()  # TODO: may be optimized for less access on disk.
   tspan <- as.character(tAxis[c(1, length(tAxis))])
   cat("Tzone:", as.character(tz(tAxis)), "\n")
@@ -385,22 +389,39 @@ EftsDataSet <- setRefClass("EftsDataSet", contains = "NetCdfDataSet", fields = l
   ncdf4::nc_sync(ncfile)
 }))
 
+
+findMatches <- function(pattern, values)
+{
+  # findMatches in utils is not exported (has an option for fuzzy matching)
+  # from utils findExactMatches: 
+  grep(pattern, values, value = TRUE)
+}
+
 #' method for dollar-tab-completion in R consoles.
 #'
-#' method for dollar-tab-completion in R consoles. 
-#'  Credits: thanks to http://stackoverflow.com/a/26711603/2752565
+#' method for dollar-tab-completion in R consoles. It may be unnecessary in 
+#' the future but such a method was required at some time to at least avoid 
+#' some issues in RStudio. We may also want to customise matches compared to default reference classes.
 #'
 #' @name eftsdotDollarNames
-#' @param x ???
-#' @param pattern ???
-#' @import utils
+#' @param x A reference class object
+#' @param pattern the regex pattern to search for in potential methods. Default value is possibly required by some versions of RStudio
+#' @importFrom utils .DollarNames
 #' @export
 .DollarNames.EftsDataSet <- function(x, pattern = "") {
+
+  if(isS4(x)) {
+    findMatches(pattern, getRefClass(class(x))$methods())
+  } else {
+    character(0)
+  }
   
-  # note that having a default value for pattern is required for RStudio. RGui
-  # always passes an argument, RStudio gui seems not.  also as a side note
-  # consider the following immplementation of a dollarnames, possibly authored
-  # by jj alaire.
-  # https://github.com/rstudio/tensorflow/blob/5a7b01656022df303b75b3ab49655d17d629ac8b/R/python.R#L100-L118
-  utils:::findMatches(pattern, getRefClass(class(x))$methods())
+  # The dollar completion thing documentation is hard to find(to me)
+  # Sources of information
+  # https://svn.r-project.org/R/trunk/src/library/utils/R/completion.R
+  # https://stat.ethz.ch/R-manual/R-devel/library/utils/html/rcompgen.html
+  # https://github.com/cran/tensorflow/blob/master/R/generics.R
+  # http://stackoverflow.com/a/26711603/2752565
+  # utils:::findMatches(pattern, getRefClass(class(x))$methods())
 } 
+

@@ -7,7 +7,7 @@
 create_variable_definitions(dframe)
 }
 \arguments{
-\item{dframe}{a data frame, one line is one variable definition. Must have at least the following column names: 'name', 'longname', 'units', 'missval', 'precision', 'type', 'type_description', 'Location_Type'}
+\item{dframe}{a data frame, one line is one variable definition. Must have at least the following column names: 'name', 'longname', 'units', 'missval', 'precision', 'type', 'type_description', 'location_type'}
 }
 \value{
 a list of length equal to the number of rows in the input data frame
@@ -24,7 +24,11 @@ varsDef$missval=-999.0
 varsDef$precision='double'
 varsDef$type=2
 varsDef$type_description='accumulated over the previous time step'
-varsDef$Location_Type='Point'
+varsDef$location_type='Point'
 str(create_variable_definitions(varsDef))
 }
+}
+\seealso{
+See
+   \code{\link{create_efts}} for examples
 }

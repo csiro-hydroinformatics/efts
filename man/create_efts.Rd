@@ -13,7 +13,7 @@ create_efts(fname, time_dim_info, data_var_definitions, stations_varnames,
 
 \item{time_dim_info}{a list with the units and values defining the time dimension of the data set}
 
-\item{data_var_definitions}{a data frame, acceptable by \code{\link{create_variable_definitions}}, or list of netcdf variable definitions, e.g. 
+\item{data_var_definitions}{a data frame, acceptable by \code{\link{create_variable_definitions}}, or list of netCDF variable definitions, e.g. 
 \code{list(rain_fcast_ens=list(name='rain_fcast_ens', longname='ECMWF Rainfall ensemble forecasts', units='mm', missval=-9999.0, precision='double', attributes=list(type=2, type_description='accumulated over the preceding interval')))}}
 
 \item{stations_varnames}{station identifiers, coercible to an integer vector (note: may change to be a more flexible character storage)}
@@ -34,7 +34,7 @@ Creates a EftsDataSet for write access to a netCDF EFTS data set
 }
 \examples{
 \dontrun{
-fname <- 'f:/tmp/f.nc'
+fname <- '~/tmp/f.nc'
 stations_varnames <- c(123,456)
 nEns <- 3
 nLead <- 4
@@ -48,12 +48,14 @@ time_dim_info <- create_time_info(from=timeAxisStart, n=nTimeSteps)
 # dimensions '3' ==> [station,ens_member,time]   
 # dimensions '2' ==> [station,time]   
 
-variable_names <- c('var1_fcast_ens','var2_fcast_ens', 'var1_obs', 'var2_obs', 'var1_ens','var2_ens')
-varDef <- create_variable_definition_dataframe(variable_names=variable_names, longNames = paste(variable_names, 'synthetic data'))
+variable_names <- c('var1_fcast_ens','var2_fcast_ens', 'var1_obs', 
+  'var2_obs', 'var1_ens','var2_ens')
+varDef <- create_variable_definition_dataframe(variable_names=variable_names, 
+  longNames = paste(variable_names, 'synthetic data'))
 varDef$dimensions <- c('4','4','2','2','3','3')
 
-snc <- create_efts(fname, time_dim_info, varDef, stations_varnames, nc_attributes=create_var_attribute_definition(), lead_length=nLead, ensemble_length=nEns)
-
+snc <- create_efts(fname, time_dim_info, varDef, stations_varnames, 
+  nc_attributes=create_var_attribute_definition(), lead_length=nLead, ensemble_length=nEns)
 
 # Following is code that was used to create unit tests for EFTS.
 # This is kept in this example to provide sample on now to write data of various dimension.
@@ -75,8 +77,10 @@ for (i in 1:length(td)) {
     var1Values <- i + 0.1*j + m
     var2Values <- 2*var1Values
     dtime = td[i]
-    snc$put_ensemble_forecasts(var1Values, variable_name = variable_names[1], identifier = station, start_time = dtime)
-    snc$put_ensemble_forecasts(var2Values, variable_name = variable_names[2], identifier = station, start_time = dtime)
+    snc$put_ensemble_forecasts(var1Values, variable_name = variable_names[1], 
+       identifier = station, start_time = dtime)
+    snc$put_ensemble_forecasts(var2Values, variable_name = variable_names[2], 
+       identifier = station, start_time = dtime)
   }
 }
 
@@ -94,7 +98,8 @@ for (j in 1:length(stations_varnames)) {
 
   var5Xts <- matrix(rep(1:nEns, each=nTimeSteps) + timeSteps + 0.1*j, ncol=nEns)
 
-  var5Values <- t(var5Xts) # [time,ens_member] to [ens_member,time], as expected by put_ensemble_series
+  # [time,ens_member] to [ens_member,time], as expected by put_ensemble_series
+  var5Values <- t(var5Xts) 
   var6Values <- 0.25 * var5Values
 
   station <- stations_varnames[j]

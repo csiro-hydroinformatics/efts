@@ -2,7 +2,7 @@
 % Please edit documentation in R/exported_functions.R
 \name{get_time_units}
 \alias{get_time_units}
-\title{Retrieves the unit string of the time dimension from a netcdf file}
+\title{Retrieves the unit string of the time dimension from a netCDF file}
 \usage{
 get_time_units(ncfile, time_dim_name = "time")
 }
@@ -15,5 +15,5 @@ get_time_units(ncfile, time_dim_name = "time")
 a character
 }
 \description{
-Retrieves the unit string of the time dimension from a netcdf file
+Retrieves the unit string of the time dimension from a netCDF file
 }

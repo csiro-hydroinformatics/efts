@@ -23,6 +23,20 @@ A list with keys units and values
 \description{
 Helper function to create the definition of the time dimension for use in a netCDF file. Defaults to create an hourly axis.
 }
+\examples{
+\dontrun{
+timeAxisStart <- ISOdate(2015, 10, 4, 0, 0, 0, tz = "Australia/Canberra")
+(time_dim_info <- create_time_info(from = timeAxisStart, n = 24L, 
+  tStep = "hours since", tStepDelta = 3L, tzoffset = "+1000"))
+
+# Note that the time zone information of thes sart date is NOT 
+# used by create_time_info; the tzoffset argument takes precedence 
+timeAxisStart <- ISOdate(2015, 10, 4, 0, 0, 0, tz = "Australia/Perth")
+(time_dim_info <- create_time_info(from = timeAxisStart, n = 24L, 
+  tStep = "hours since", tStepDelta = 3L, tzoffset = "+1000"))
+
+}
+}
 \seealso{
 See
    \code{\link{create_efts}} for examples

@@ -6,7 +6,11 @@
 \alias{NetCdfDataSet}
 \title{Reference class convenient for access to a netCDF file.}
 \description{
-Reference class convenient for access to a netCDF file. Note for internal implementation that ncdf4 objects are basically lists with a class attribute.
+Reference class convenient for access to a netCDF file. 
+Note for internal implementation that ncdf4 objects are 
+basically lists with a class attribute. This class [NetCdfDataSet-class] 
+is used as a parent class to the [EftsDataSet-class] class 
+but may be reused and expanded for other types of netCDF data.
 }
 \section{Fields}{
 

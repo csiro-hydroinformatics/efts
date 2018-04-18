@@ -2,7 +2,7 @@
 % Please edit documentation in R/exported_functions.R
 \name{get_time_dimension}
 \alias{get_time_dimension}
-\title{Retrieves the time dimension from a netcdf file}
+\title{Retrieves the time dimension from a netCDF file}
 \usage{
 get_time_dimension(ncfile, time_dim_name = "time", time_zone = "UTC")
 }
@@ -17,5 +17,5 @@ get_time_dimension(ncfile, time_dim_name = "time", time_zone = "UTC")
 A vector of Dates
 }
 \description{
-Retrieves the time dimension from a netcdf file
+Retrieves the time dimension from a netCDF file
 }

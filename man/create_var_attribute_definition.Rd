@@ -6,14 +6,14 @@
 \usage{
 create_var_attribute_definition(type = 2L,
   type_description = "accumulated over the preceding interval",
-  locationType = "Point")
+  location_type = "Point")
 }
 \arguments{
 \item{type}{A data type identifier, as a coded description.}
 
 \item{type_description}{description of this data type identifier.}
 
-\item{locationType}{a character, type of location, e.g. 'Point'}
+\item{location_type}{a character, type of location, e.g. 'Point'}
 }
 \value{
 a list of attributes, describing the type of variable stored
@@ -23,10 +23,11 @@ Create variable attribute definition
 }
 \examples{
 \dontrun{
-vdef <- create_variable_definition(name='rain_fcast_ens', longname='Rainfall ensemble forecast derived from some prediction', 
+va <- create_var_attribute_definition(type=2L, 
+  type_description='accumulated over the preceding interval', location_type='Point')
+vdef <- create_variable_definition(name='rain_fcast_ens', 
+  longname='Rainfall ensemble forecast derived from some prediction', 
   units='mm', missval=-9999.0, precision='double', 
-  var_attribute=create_var_attribute_definition(type=2L, type_description='accumulated over the preceding interval', locationType='Point')
-)
-  
+  var_attribute=va)
 }
 }
