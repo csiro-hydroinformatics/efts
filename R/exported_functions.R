@@ -278,7 +278,7 @@ pad_global_attribute <- function(nc, attribute_name, attribute_value, sep = "\n"
 #' @param ensemble_length number of ensembles, i.e. number of forecasts for each point on the main time axis of the data set
 #' @examples
 #' \dontrun{
-#' fname <- '~/tmp/f.nc'
+#' fname <- tempfile()
 #' stations_varnames <- c(123,456)
 #' nEns <- 3
 #' nLead <- 4
@@ -351,6 +351,9 @@ pad_global_attribute <- function(nc, attribute_name, attribute_value, sep = "\n"
 #'   snc$put_ensemble_series(var6Values, variable_name = variable_names[6], identifier = station)
 #' }
 #' snc$close()
+#' # Cleaning up temp file:
+#' if (file.exists(fname)) 
+#'   file.remove(fname)
 #' }
 #' @export
 #' @import ncdf4
