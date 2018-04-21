@@ -45,7 +45,7 @@ you need to define these dimensions. To create the information about the main ti
 ```{r}
 library(efts)
 timeAxisStart <- ISOdate(year=2010, month=08, day=01, hour = 12, min = 0, sec = 0, tz = "UTC")
-timeDimInfo <- create_time_info(from=timeAxisStart, n=48, tStep='hours since', tStepDelta=1L)
+timeDimInfo <- create_time_info(from=timeAxisStart, n=48, time_step='hours since', time_step_delta=1L)
 str(timeDimInfo)
 ```
 
@@ -54,7 +54,7 @@ via a data frame. For instance, you can start from a stub such as created by the
 
 ```{r}
 variable_names <- c('rain_fcast_ens','pet_fcast_ens')
-varDef <- create_variable_definition_dataframe(variable_names=variable_names, longNames = rep('synthetic data', 2))
+varDef <- create_variable_definition_dataframe(variable_names=variable_names, long_names = rep('synthetic data', 2), dimensions=4L)
 str(varDef)
 ```
 
@@ -67,8 +67,13 @@ stationIds <- c(123,456)
 nEns <- 3
 nLead <- 4
 fname <- tempfile() # or something you prefer.
-default_var_attributes <- create_var_attribute_definition()
-snc <- create_efts(fname, timeDimInfo, varDef, stationIds, nc_attributes=default_var_attributes, lead_length=nLead, ensemble_length=nEns)
+global_attr <- create_global_attributes(
+  title="data set title", 
+  institution="my org", 
+  catchment="My_Catchment", 
+  source="A journal reference, URL", 
+  comment="example for vignette")
+snc <- create_efts(fname, timeDimInfo, varDef, stationIds, nc_attributes=global_attr, lead_length=nLead, ensemble_length=nEns)
 ```
 
 The default `print` method for this object snc is the same output as objects of class `ncdf4`
@@ -146,7 +151,7 @@ As of version 0.5-1, there is a convenience function to retrieve the UTC offset 
 
 ```{r}
 paste0( "UTC offset as a string: ", snc$get_utc_offset())
-paste0( "UTC offset as a lubridate duration: ", snc$get_utc_offset(as_string=FALSE))
+paste0( "UTC offset as a difftime: ", snc$get_utc_offset(as_string=FALSE))
 ```
 
 Close the data set with the following commands:

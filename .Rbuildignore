@@ -1,5 +1,6 @@
 .*\.gitignore
 .*\.git
+.*\.vscode
 ^\.travis\.yml$
 ^.*\.Rproj$
 ^\.Rproj\.user$

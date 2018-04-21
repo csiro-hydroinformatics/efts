@@ -139,6 +139,49 @@ put_variable_attributes <- function(data_var_def, nc) {
   }
 }
 
+create_mandatory_vardefs <- function(station_dim, str_dim, ensemble_dim, lead_time_dim, lead_time_tstep = "hours") {
+
+  # https://github.com/jmp75/efts/blob/107c553045a37e6ef36b2eababf6a299e7883d50/docs/netcdf_for_water_forecasting.md#mandatory-variables
+  # float time(time)
+  # int station_id(station)
+  # char station_name(strLen, station)
+  # int ens_member(ens_member)
+  # float lead_time(lead_time)
+  # float lat (station)
+  # float lon (station)
+  variables <- list(
+    station_ids_var = ncdf4::ncvar_def("station_id", units = "", 
+      dim = list(station_dim), missval = NULL, longname = "station or node identification code", 
+      prec = "integer"), 
+    station_names_var = ncdf4::ncvar_def("station_name", units = "", 
+      dim = list(str_dim, station_dim), missval = NULL, longname = "station or node name", 
+      prec = "char"), 
+    ensemble_var = ncdf4::ncvar_def("ens_member", units = "member id", 
+      dim = list(ensemble_dim), missval = NULL, longname = "ensemble member", prec = "integer"), 
+    lead_time_var = ncdf4::ncvar_def(lead_time_dim_name, units = paste(lead_time_tstep, "since time"), 
+      dim = list(lead_time_dim), missval = NULL, longname = "forecast lead time", 
+      prec = "integer"), 
+    latitude_var = ncdf4::ncvar_def("lat", units = "degrees north", 
+      dim = list(station_dim), missval = -9999, longname = "latitude", prec = "float"), 
+    longitude_var = ncdf4::ncvar_def("lon", 
+      units = "degrees east", dim = list(station_dim), missval = -9999, 
+      longname = "longitude", prec = "float")
+  )
+  return(variables)
+}
+
+create_optional_vardefs <- function(station_dim, vars_def = default_optional_vardefs_v2()) {
+  # https://github.com/jmp75/efts/blob/107c553045a37e6ef36b2eababf6a299e7883d50/docs/netcdf_for_water_forecasting.md#mandatory-variables
+  vars_def$rownum <- 1:nrow(vars_def)
+  f <- function(vd) {
+    ncdf4::ncvar_def(vd$name, 
+      units = vd$units, dim = list(station_dim), missval = vd$missval, longname = vd$longname, 
+      prec = vd$precision)
+  } 
+  ncvar_defs <- plyr::dlply(.data = vars_def, .variables = "rownum", .fun = f)
+  return(ncvar_defs)
+}
+
 #' Create netCDF variables according to the definition 
 #'
 #' Create netCDF variables according to the definition 
@@ -151,7 +194,7 @@ put_variable_attributes <- function(data_var_def, nc) {
 #' @seealso See
 #'    \code{\link{create_efts}} for examples
 create_efts_variables <- function(data_var_def, time_dim_info, num_stations, lead_length, 
-  ensemble_length) {
+  ensemble_length, optional_vars, lead_time_tstep) {
   efts_dims <- create_nc_dims(time_dim_info = time_dim_info, num_stations = num_stations, 
     lead_length = lead_length, ensemble_length = ensemble_length)
   time_dim <- efts_dims$time_dim
@@ -160,21 +203,15 @@ create_efts_variables <- function(data_var_def, time_dim_info, num_stations, lea
   str_dim <- efts_dims$str_dim
   ensemble_dim <- efts_dims$ensemble_dim
   
-  variables <- list(station_names_var = ncdf4::ncvar_def("station_name", units = "", 
-    dim = list(str_dim, station_dim), missval = NULL, longname = "station or node name", 
-    prec = "char"), station_ids_var = ncdf4::ncvar_def("station_id", units = "", 
-    dim = list(station_dim), missval = NULL, longname = "station or node identification code", 
-    prec = "integer"), lead_time_var = ncdf4::ncvar_def(lead_time_dim_name, units = "hours since time", 
-    dim = list(lead_time_dim), missval = NULL, longname = "forecast lead time", 
-    prec = "integer"), ensemble_var = ncdf4::ncvar_def("ens_member", units = "member id", 
-    dim = list(ensemble_dim), missval = NULL, longname = "ensemble member", prec = "integer"), 
-    latitude_var = ncdf4::ncvar_def("lat", units = "degrees north", dim = list(station_dim), 
-      missval = -9999, longname = "latitude", prec = "float"), longitude_var = ncdf4::ncvar_def("lon", 
-      units = "degrees east", dim = list(station_dim), missval = -9999, 
-      longname = "longitude", prec = "float"), elevation_var = ncdf4::ncvar_def("elevation", 
-      units = "m", dim = list(station_dim), missval = -9999, longname = "station elevation above sea level", 
-      prec = "float"))
-  
+  mandatory_var_ncdefs <- create_mandatory_vardefs(station_dim, str_dim, ensemble_dim, lead_time_dim, lead_time_tstep);
+  variables_metadata <- mandatory_var_ncdefs
+  if(!missing(optional_vars)) {
+    optional_var_ncdefs <- create_optional_vardefs(station_dim, vars_def = optional_vars)
+    # TODO if not native to ncdf4: check name clashes
+    # already_defs <- names(variables)
+    variables_metadata <- c(variables_metadata, optional_var_ncdefs)
+  }
+
   unknownDims <- which(plyr::laply(data_var_def, .fun = function(x) {
     (x$dim_type %in% c("2", "3", "4")) == FALSE
   }))
@@ -192,16 +229,18 @@ create_efts_variables <- function(data_var_def, time_dim_info, num_stations, lea
     x$dim_type == "2"
   })]
   
+  variables <- list()
+  variables$metadatavars <- variables_metadata
   variables$datavars <- lapply(ensFcastDataVarDef, create_data_variable, list(lead_time_dim, 
     station_dim, ensemble_dim, time_dim))  # [lead_time,station,ens_member,time]
   
   variables$datavars <- c(variables$datavars, lapply(ensDataVarDef, create_data_variable, 
     list(station_dim, ensemble_dim, time_dim))  # [station,ens_member,time]
-)
+  )
   
   variables$datavars <- c(variables$datavars, lapply(pointDataVarDef, create_data_variable, 
     list(station_dim, time_dim))  # [station,time]
-)
+  )
   
   names(variables$datavars) <- lapply(c(ensFcastDataVarDef, ensDataVarDef, 
     pointDataVarDef), `[[`, "name")
