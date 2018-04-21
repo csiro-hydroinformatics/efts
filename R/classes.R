@@ -200,8 +200,10 @@ EftsDataSet <- setRefClass("EftsDataSet", contains = "NetCdfDataSet", fields = l
   "Gets (and cache in memory) all the values in a variable. Should be used only for dimension variables"
   # TODO: reconsider the name and purpose. This should be a 'private'
   # function, meant only to get dimension variables.
-  if (!(variable_name %in% names(identifiers_dimensions))) identifiers_dimensions[[variable_name]] <<- ncdf4::ncvar_get(ncfile, 
-    variable_name)
+  if (!(variable_name %in% names(identifiers_dimensions)) ||
+    (identifiers_dimensions[[variable_name]] == NULL)) {
+    identifiers_dimensions[[variable_name]] <<- ncdf4::ncvar_get(ncfile, variable_name)
+  }  
   identifiers_dimensions[[variable_name]]
 }, index_for_time = function(dateTime) {
   "Gets the index at which a date-time is found in the main time axis of this data set"
@@ -355,6 +357,7 @@ EftsDataSet <- setRefClass("EftsDataSet", contains = "NetCdfDataSet", fields = l
   # TODO: reconsider the name and purpose. This should be a 'private'
   # function, meant only to get dimension variables.
   "Puts all the values in a variable. Should be used only for dimension variables"
+  identifiers_dimensions[[variable_name]] <<- NULL
   ncdf4::ncvar_put(ncfile, variable_name, x)
 }, summary = function() {
   "Print a summary of this EFTS netCDF file"

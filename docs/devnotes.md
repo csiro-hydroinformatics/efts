@@ -7,11 +7,18 @@
 library(testthat)
 library(devtools)
 efts_dir <- '~/src/github_jm/efts'
-devtools::test(efts_dir)
+efts_dir <- 'c:/src/github_jm/efts'
 devtools::document(efts_dir)
+devtools::test(efts_dir)
 devtools::build(efts_dir, vignettes = FALSE)
 setwd(efts_dir)
 rmarkdown::render("README.Rmd")
+```
+
+```R
+library(devtools)
+efts_dir <- 'c:/src/github_jm/efts'
+devtools::load_all(efts_dir)
 ```
 
 For CRAN submission checks:
@@ -36,14 +43,14 @@ help('efts', help_type='html')
 
 ```R
 timeAxisStart <- ISOdate(2015, 10, 4, 0, 0, 0, tz = "Australia/Canberra")
-(time_dim_info <- create_time_info(from = timeAxisStart, n = 24L, tStep = "hours since", tStepDelta = 3L, tzoffset = "+1000"))
+(time_dim_info <- create_time_info(from = timeAxisStart, n = 24L, time_step = "hours since", time_step_delta = 3L, tzoffset = "+1000"))
 
 # Note that the time zone information of thes sart date is NOT 
 # used by create_time_info; the tzoffset argument takes precedence 
 timeAxisStart <- ISOdate(2015, 10, 4, 0, 0, 0, tz = "Australia/Perth")
-(time_dim_info <- create_time_info(from = timeAxisStart, n = 24L, tStep = "hours since", tStepDelta = 3L, tzoffset = "+1000"))
+(time_dim_info <- create_time_info(from = timeAxisStart, n = 24L, time_step = "hours since", time_step_delta = 3L, tzoffset = "+1000"))
 
-create_time_info(from, n, tStep = "hours since", tStepDelta = 1L, tzoffset)
+create_time_info(from, n, time_step = "hours since", time_step_delta = 1L, tzoffset)
 ```
 
 # Troubleshooting 
