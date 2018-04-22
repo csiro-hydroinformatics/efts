@@ -2,11 +2,13 @@
 # Loading a file from James:
 
 fname <- 'c:/tmp/blah.nc'
+fname <- '~/tmp/blah.nc'
 if (file.exists(fname)) 
   file.remove(fname)
 
 library(devtools)
 efts_dir <- 'c:/src/github_jm/efts'
+efts_dir <- '~/src/github_jm/efts'
 devtools::load_all(efts_dir)
 
 
@@ -91,6 +93,14 @@ for (j in 1:length(stations_varnames)) {
   snc$put_ensemble_series(var5Values, variable_name = variable_names[5], identifier = station)
   snc$put_ensemble_series(var6Values, variable_name = variable_names[6], identifier = station)
 }
+
+# We can get/put values for optional metadata variables:
+snc$get_values("x")
+snc$put_values(c(1.1, 2.2), "x")
+
+# Direct get/set access to data variables, however, is prevented; the following would cause an error:
+# snc$get_values("var1_fcast_ens")
+
 snc$close()
 # Cleaning up temp file:
 if (file.exists(fname)) 

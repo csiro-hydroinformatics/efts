@@ -2,12 +2,12 @@ Package: efts
 Type: Package
 Title: High-Level Functions to Read and Write Ensemble Forecast Time Series in netCDF
 Description: The binary file format netCDF is developed primarily for climate, ocean and
-    meteorological data, and efts is a package to read and write Ensemble Forecast Time 
+    meteorological data, and 'efts' is a package to read and write Ensemble Forecast Time 
     Series data in netCDF. netCDF has traditionally been used to store time slices 
     of gridded data, rather than complete time series of point data. 
-    efts facilitates data handling stored in netCDF files that follow a convention
+    'efts' facilitates data handling stored in netCDF files that follow a convention
     devised in the domain of ensemble hydrologic forecasting, but possibly applicable 
-    in other domains. efts uses reference class objects to access data, 
+    in other domains. 'efts' uses reference class objects to access data, 
     hiding the low-level and bug prone netCDF and date-time operations.
 Version: 0.8-0
 Date: 2018-04-08

@@ -1,10 +1,10 @@
 ---
-title: "Writing ensemble series with the efts R package"
+title: "Writing ensemble series with the 'efts' R package"
 author: "Jean-Michel Perraud"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Writing ensemble series with the efts R package}
+  %\VignetteIndexEntry{Writing ensemble series with the 'efts' R package}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -67,13 +67,39 @@ stationIds <- c(123,456)
 nEns <- 3
 nLead <- 4
 fname <- tempfile() # or something you prefer.
+```
+
+It is mandatory to provide some global file attributes, the function `create_global_attributes` provides a starting point.
+
+```{r}
 global_attr <- create_global_attributes(
   title="data set title", 
   institution="my org", 
   catchment="My_Catchment", 
   source="A journal reference, URL", 
   comment="example for vignette")
-snc <- create_efts(fname, timeDimInfo, varDef, stationIds, nc_attributes=global_attr, lead_length=nLead, ensemble_length=nEns)
+```
+
+Similarly for optional geographic metadata variables:
+
+```{r}
+(opt_metadatavars <- default_optional_variable_definitions_v2_0())
+```
+
+Similarly for optional geographic metadata variables:
+
+```{r}
+snc <- create_efts(
+fname=fname,
+data_var_definitions=varDef,
+station_names=NULL,
+optional_vars=opt_metadatavars,
+ensemble_length=       
+time_dim_info=timeDimInfo,
+stations_varnames=stationIds,
+nc_attributes=global_attr,
+lead_length=nLead,
+ensemble_length=nEns)
 ```
 
 The default `print` method for this object snc is the same output as objects of class `ncdf4`

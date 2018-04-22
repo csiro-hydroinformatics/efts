@@ -1,10 +1,10 @@
 ---
-title: "Introduction to the efts R package"
+title: "Introduction to the 'efts' R package"
 author: "Jean-Michel Perraud"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Introduction to the efts R package}
+  %\VignetteIndexEntry{Introduction to the 'efts' R package}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

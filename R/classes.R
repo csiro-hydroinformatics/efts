@@ -117,7 +117,7 @@ EftsDataSet <- setRefClass("EftsDataSet", contains = "NetCdfDataSet", fields = l
   ensData <- ncdf4::ncvar_get(ncfile, variable_name, start = c(1, 1, index_id, indTime), 
     count = c(lead_time_count, stationCount, 1, 1), collapse_degen = FALSE)
   timeAxis <- start_time + lubridate::dhours(1) * ncfile$dim$lead_time$vals
-  colnam <- get_values("station_id")
+  colnam <- get_values(station_id_varname)
   out <- xts(x = ensData[, , 1, 1], order.by = timeAxis, tzone = tz(start_time))
   names(out) <- colnam
   return(out)
@@ -200,8 +200,10 @@ EftsDataSet <- setRefClass("EftsDataSet", contains = "NetCdfDataSet", fields = l
   "Gets (and cache in memory) all the values in a variable. Should be used only for dimension variables"
   # TODO: reconsider the name and purpose. This should be a 'private'
   # function, meant only to get dimension variables.
-  if (!(variable_name %in% names(identifiers_dimensions)) ||
-    (identifiers_dimensions[[variable_name]] == NULL)) {
+  if (!(variable_name %in% conventional_varnames)) {
+    stop(paste(variable_name, "cannot be directly retrieved. Must be in", paste(conventional_varnames, collapse=", ")))
+  }  
+  if (!(variable_name %in% names(identifiers_dimensions))) {
     identifiers_dimensions[[variable_name]] <<- ncdf4::ncvar_get(ncfile, variable_name)
   }  
   identifiers_dimensions[[variable_name]]
@@ -357,8 +359,11 @@ EftsDataSet <- setRefClass("EftsDataSet", contains = "NetCdfDataSet", fields = l
   # TODO: reconsider the name and purpose. This should be a 'private'
   # function, meant only to get dimension variables.
   "Puts all the values in a variable. Should be used only for dimension variables"
-  identifiers_dimensions[[variable_name]] <<- NULL
+  if (!(variable_name %in% conventional_varnames)) {
+    stop(paste(variable_name, "cannot be directly set. Must be one of", paste(conventional_varnames, collpase=", ")))
+  }  
   ncdf4::ncvar_put(ncfile, variable_name, x)
+  identifiers_dimensions[[variable_name]] <<- x
 }, summary = function() {
   "Print a summary of this EFTS netCDF file"
   tAxis <- get_time_dim()  # TODO: may be optimized for less access on disk.

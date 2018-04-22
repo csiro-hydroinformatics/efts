@@ -7,7 +7,7 @@
 library(testthat)
 library(devtools)
 efts_dir <- '~/src/github_jm/efts'
-efts_dir <- 'c:/src/github_jm/efts'
+# efts_dir <- 'c:/src/github_jm/efts'
 devtools::document(efts_dir)
 devtools::test(efts_dir)
 devtools::build(efts_dir, vignettes = FALSE)
@@ -17,7 +17,8 @@ rmarkdown::render("README.Rmd")
 
 ```R
 library(devtools)
-efts_dir <- 'c:/src/github_jm/efts'
+# efts_dir <- 'c:/src/github_jm/efts'
+efts_dir <- '~/src/github_jm/efts'
 devtools::load_all(efts_dir)
 ```
 

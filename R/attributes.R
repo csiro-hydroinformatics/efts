@@ -52,7 +52,7 @@ pad_global_attribute <- function(nc, attribute_name, attribute_value, sep = "\n"
 #' Define a set of global attributes for netCDF files.
 #'
 #' The conventions require a set of global attributes to be present, 
-#' see \link{https://github.com/jmp75/efts/blob/master/docs/netcdf_for_water_forecasting.md#global-attributes}.
+#' see \url{https://github.com/jmp75/efts/blob/master/docs/netcdf_for_water_forecasting.md#global-attributes}.
 #' This function is recommended to define these attributes.
 #'
 #' @param title text, a succinct description of what is in the dataset
@@ -91,6 +91,14 @@ create_global_attributes <- function(title, institution, source, catchment, comm
 # Below are functions not exported
 ########################################
 
+check_global_attributes <- function(nc_attributes)
+{
+  stopifnot(is.list(nc_attributes))
+  expected <- mandatory_global_attributes
+  present_attr <- expected %in% names(nc_attributes)
+  missing_attr <- which(!present_attr)
+  if(length(missing_attr) > 0) stop(paste("missing global attributes: ",paste(expected[missing_attr], collapse=","), sep=" "))
+}
 
 put_variable_attributes <- function(data_var_def, nc) {
   a <- data_var_def

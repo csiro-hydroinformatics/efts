@@ -35,8 +35,10 @@ doTests <- function() {
     varsDef$type_description <- "accumulated over the previous time step"
     varsDef$location_type <- "Point"
     
+    glob_attr <- create_global_attributes(title="title test", institution="test", source="test", catchment="dummy", comment="none")
+
     snc <- create_efts(tempNcFname, time_dim_info, create_variable_definitions(varsDef), 
-      stations_varnames, lead_length = nLead, ensemble_length = nEns)
+      stations_varnames, nc_attributes=glob_attr, lead_length = nLead, ensemble_length = nEns)
     
     
     snc$put_ensemble_forecasts(x, variable_name = v1, identifier = s1, start_time = start_time)

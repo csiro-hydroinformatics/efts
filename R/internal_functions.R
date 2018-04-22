@@ -8,6 +8,44 @@ stations_dim_name <- "station"
 lead_time_dim_name <- "lead_time"
 time_dim_name <- "time"
 ensemble_member_dim_name <- "ens_member"
+str_length_dim_name <- "str_len"
+
+# int station_id[station]   
+station_id_varname <- "station_id"
+# char station_name[str_len,station]   
+station_name_varname <- "station_name"
+# float lat[station]   
+lat_varname <- "lat"
+# float lon[station]   
+lon_varname <- "lon"
+# float x[station]   
+x_varname <- "x"
+# float y[station]   
+y_varname <- "y"
+# float area[station]   
+area_varname <- "area"
+# float elevation[station]   
+elevation_varname <- "elevation"
+
+conventional_varnames <- c(
+  stations_dim_name ,
+  lead_time_dim_name ,
+  time_dim_name ,
+  ensemble_member_dim_name ,
+  str_length_dim_name ,
+  station_id_varname ,
+  station_name_varname ,
+  lat_varname ,
+  lon_varname ,
+  x_varname ,
+  y_varname ,
+  area_varname ,
+  elevation_varname
+)
+
+mandatory_global_attributes <- c("title", "institution", "source", "catchment", "comment")
+
+
 
 get_default_dim_order <- function() {
   return(c(lead_time_dim_name, stations_dim_name, ensemble_member_dim_name, time_dim_name))
@@ -60,7 +98,7 @@ reduce_dimensions <- function(x, subset_dim_names){
     subset_dim_names = dn[dimsize_input > 1]
 
   diffdim <- setdiff(subset_dim_names, dn)
-  if (length(diffdim)>0) stop(paste0('Dimension names to slice but not found in array dim names: ', paste(diffdim, collapse=', ')))
+  if (length(diffdim)>0) stop(paste0('Dimension names to slice but not found in array dim names: ', paste(diffdim, collpase=', ')))
 
   dropped_dims <- setdiff(dn,subset_dim_names)
   if( any(dimsize_input[dropped_dims] > 1)) stop('Cannot drop non-degenerate when subsetting')

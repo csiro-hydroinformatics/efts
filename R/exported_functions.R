@@ -47,8 +47,14 @@ open_efts <- function(ncfile, writein = FALSE) {
 #'       \code{list(rain_fcast_ens=list(name='rain_fcast_ens', longname='ECMWF Rainfall ensemble forecasts', units='mm', missval=-9999.0, precision='double', attributes=list(type=2, type_description='accumulated over the preceding interval')))}
 #' @param stations_varnames station identifiers, coercible to an integer vector (note: may change to be a more flexible character storage)
 #' @param station_names optional; names of the stations
-#' @param nc_attributes a named list of characters, attributes for the whole file.
+#' @param nc_attributes a named list of characters, attributes for the whole file, 
+#' including mandatory ones: title, institution, source, catchment, comment. 
+#' You may use \code{\link{create_global_attributes}} as a starting template.
 #' @param lead_length length of the lead forecasting time series.
+#' @param optional_vars a data frame defining optional netCDF variables. For a templated default see 
+#' \code{\link{default_optional_variable_definitions_v2_0}} and 
+#' \url{https://github.com/jmp75/efts/blob/107c553045a37e6ef36b2eababf6a299e7883d50/docs/netcdf_for_water_forecasting.md#optional-variables}
+#' @param lead_time_tstep string specifying the time step of the forecast lead length.
 #' @param ensemble_length number of ensembles, i.e. number of forecasts for each point on the main time axis of the data set
 #' @examples
 #'
@@ -148,6 +154,11 @@ create_efts <- function(fname, time_dim_info, data_var_definitions, stations_var
     stop("You must provide station identifiers when creating a new EFTS netCDF data set")
   }
   
+  if (is.null(nc_attributes)) {
+    stop(paste("You must provide a suitable list for nc_attributes, including", paste(mandatory_global_attributes, collapse=", ")))
+  }
+  check_global_attributes(nc_attributes)
+  
   if (file.exists(fname)) 
     stop(paste("File already exists:", fname))
   
@@ -161,18 +172,19 @@ create_efts <- function(fname, time_dim_info, data_var_definitions, stations_var
                                     ensemble_length = ensemble_length,
                                     optional_vars = optional_vars,
                                     lead_time_tstep = lead_time_tstep)
-      
+
+  ## Determine if there is real value in a tryCatch. What is the point if we cannot close/delete the file.
   # nc <- tryCatch(
-  #   createSchema(fname, varDefs, data_var_definitions, nc_attributes, 
-  #     stations_varnames, lead_length, ensemble_length, station_names), 
+  #   createSchema(fname, varDefs, data_var_definitions, nc_attributes, optional_vars, 
+  #     stations_varnames, lead_length, ensemble_length, station_names),
   #   error = function(e) {
   #     stop(paste("netCDF schema creation failed", e))
   #     NULL
   #   }, finally = function() {
   #   }
   # )
-      nc <- createSchema(fname, varDefs, data_var_definitions, nc_attributes, optional_vars, 
-      stations_varnames, lead_length, ensemble_length, station_names)
+  nc <- createSchema(fname, varDefs, data_var_definitions, nc_attributes, optional_vars, 
+    stations_varnames, lead_length, ensemble_length, station_names)
 
   return(EftsDataSet$new(nc))
 }
@@ -198,12 +210,12 @@ createSchema <- function(fname, varDefs, data_var_definitions, nc_attributes, op
   ncdf4::ncatt_put(nc, time_dim_name, "standard_name", time_dim_name)
   ncdf4::ncatt_put(nc, time_dim_name, "time_standard", "UTC")
   ncdf4::ncatt_put(nc, time_dim_name, "axis", "t")
-  ncdf4::ncatt_put(nc, "ens_member", "standard_name", "ens_member")
-  ncdf4::ncatt_put(nc, "ens_member", "axis", "u")
+  ncdf4::ncatt_put(nc, ensemble_member_dim_name, "standard_name", "ens_member")
+  ncdf4::ncatt_put(nc, ensemble_member_dim_name, "axis", "u")
   ncdf4::ncatt_put(nc, lead_time_dim_name, "standard_name", "lead_time")
   ncdf4::ncatt_put(nc, lead_time_dim_name, "axis", "v")
-  ncdf4::ncatt_put(nc, "lat", "axis", "y")
-  ncdf4::ncatt_put(nc, "lon", "axis", "x")
+  ncdf4::ncatt_put(nc, lat_varname, "axis", "y")
+  ncdf4::ncatt_put(nc, lon_varname, "axis", "x")
   
   ## attributes for optional metadata variables
   if(!is.null(optional_vars))
@@ -215,11 +227,11 @@ createSchema <- function(fname, varDefs, data_var_definitions, nc_attributes, op
         if(!is.na(sn)) ncdf4::ncatt_put(nc, v, "standard_name", sn)
       }
     }
-    if("x" %in% var_names){
-      ncdf4::ncatt_put(nc, "x", "axis", "x")
+    if(x_varname %in% var_names){
+      ncdf4::ncatt_put(nc, x_varname, "axis", "x")
     }
-    if("y" %in% var_names){
-      ncdf4::ncatt_put(nc, "y", "axis", "y")
+    if(y_varname %in% var_names){
+      ncdf4::ncatt_put(nc, y_varname, "axis", "y")
     }
   }
 
@@ -240,11 +252,11 @@ createSchema <- function(fname, varDefs, data_var_definitions, nc_attributes, op
   }
 
   ## populate metadata variables
-  ncdf4::ncvar_put(nc, "station_id", stations_varnames)
+  ncdf4::ncvar_put(nc, station_id_varname, stations_varnames)
   ncdf4::ncvar_put(nc, lead_time_dim_name, 0:(lead_length - 1))
-  ncdf4::ncvar_put(nc, "ens_member", 1:ensemble_length)
+  ncdf4::ncvar_put(nc, ensemble_member_dim_name, 1:ensemble_length)
   if (!is.null(station_names)) {
-    ncdf4::ncvar_put(nc, "station_name", station_names)
+    ncdf4::ncvar_put(nc, station_name_varname, station_names)
   }
   # One seems to need to close/reopen the newly created file, otherwise some
   # ncvar_get operations will fail with a cryptic message.  I follow the
