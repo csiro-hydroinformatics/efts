@@ -1,16 +1,26 @@
+## Changes since last submission
+
+* Address feedback given by CRAN reviewer.
+    * use single quote 'efts' for refering to the package in DESCRIPTION and elsewhere.
+    * function examples are not marked 'dontrun'
+    * all tests, examples, vignettes use 'tempfile()' for transient file creation
+* Facilities and stricter checks for compliance with the netCDF convention.
 
 ## Test environments
 
 * Local Linux Debian, R 3.4.4
-* Local Windows 7 R 3.4.4   and R 3.3.3
+* Local Windows 7 R 3.4.4 
 * win-builder (devel and release)
 
 ```R
 library(testthat)
 library(devtools)
 efts_dir <- '~/src/github_jm/efts'
+devtools::document(efts_dir)
 devtools::test(efts_dir)
-devtools::check(efts_dir, cran=TRUE)
+devtools::check(efts_dir, document = TRUE, 
+  manual = TRUE, cran = TRUE, check_version = TRUE,
+  force_suggests = TRUE, run_dont_test = TRUE)
 devtools::build_win(pkg = efts_dir, version = c("R-release", "R-devel"))
 ```
 

@@ -13,14 +13,14 @@
 #' stopifnot(file.exists(ens_fcast_file))
 #' snc <- open_efts(ens_fcast_file)
 #' (variable_names <- snc$get_variable_names())
-#' (stations_varnames <- snc$get_values('station_id'))
+#' (stations_ids <- snc$get_values('station_id'))
 #' nEns <- snc$get_ensemble_size()
 #' nLead <- snc$get_lead_time_count()
 #' td <- snc$get_time_dim()
 #' stopifnot('rain_fcast_ens' %in% variable_names)
 #' 
 #' ens_fcast_rainfall <- snc$get_ensemble_forecasts('rain_fcast_ens',
-#'   stations_varnames[1], start_time=td[2])
+#'   stations_ids[1], start_time=td[2])
 #' names(ens_fcast_rainfall) <- as.character(1:ncol(ens_fcast_rainfall))
 #' plot(ens_fcast_rainfall, legend.loc='right')
 #' 
@@ -45,7 +45,7 @@ open_efts <- function(ncfile, writein = FALSE) {
 #' @param time_dim_info a list with the units and values defining the time dimension of the data set
 #' @param data_var_definitions a data frame, acceptable by \code{\link{create_variable_definitions}}, or list of netCDF variable definitions, e.g. 
 #'       \code{list(rain_fcast_ens=list(name='rain_fcast_ens', longname='ECMWF Rainfall ensemble forecasts', units='mm', missval=-9999.0, precision='double', attributes=list(type=2, type_description='accumulated over the preceding interval')))}
-#' @param stations_varnames station identifiers, coercible to an integer vector (note: may change to be a more flexible character storage)
+#' @param stations_ids station identifiers, coercible to an integer vector (note: may change to be a more flexible character storage)
 #' @param station_names optional; names of the stations
 #' @param nc_attributes a named list of characters, attributes for the whole file, 
 #' including mandatory ones: title, institution, source, catchment, comment. 
@@ -59,13 +59,14 @@ open_efts <- function(ncfile, writein = FALSE) {
 #' @examples
 #'
 #' fname <- tempfile()
-#' stations_varnames <- c(123,456)
+#' stations_ids <- c(123,456)
 #' nEns <- 3
 #' nLead <- 4
 #' nTimeSteps <- 12
 #' 
 #' timeAxisStart <- ISOdate(year=2010, month=08, day=01, hour = 14, min = 0, sec = 0, tz = 'UTC')
-#' time_dim_info <- create_time_info(from=timeAxisStart, n=nTimeSteps)
+#' time_dim_info <- create_time_info(from=timeAxisStart, 
+#'   n=nTimeSteps, time_step = "hours since")
 #' 
 #' # It is possible to define variables for three combinations of dimensions.
 #' # dimensions '4' ==> [lead_time,station,ens_member,time]
@@ -74,9 +75,10 @@ open_efts <- function(ncfile, writein = FALSE) {
 #' 
 #' variable_names <- c('var1_fcast_ens','var2_fcast_ens', 'var1_obs', 
 #'   'var2_obs', 'var1_ens','var2_ens')
-#' varDef <- create_variable_definition_dataframe(variable_names=variable_names, 
-#'   long_names = paste(variable_names, 'synthetic data'))
-#' varDef$dimensions <- c('4','4','2','2','3','3')
+#' (varDef <- create_variable_definition_dataframe(
+#'   variable_names=variable_names, 
+#'   long_names = paste(variable_names, 'synthetic data'), 
+#'   dimensions = c(4L,4L,2L,2L,3L,3L)))
 #' 
 #' glob_attr <- create_global_attributes(
 #'   title="data set title", 
@@ -85,8 +87,18 @@ open_efts <- function(ncfile, writein = FALSE) {
 #'   source="A journal reference, URL", 
 #'   comment="example for vignette")
 #' 
-#' snc <- create_efts(fname, time_dim_info, varDef, stations_varnames, 
-#'   nc_attributes=glob_attr, lead_length=nLead, ensemble_length=nEns)
+#' (opt_metadatavars <- default_optional_variable_definitions_v2_0())
+#' 
+#' snc <- create_efts(
+#'   fname=fname, 
+#'   time_dim_info=time_dim_info, 
+#'   data_var_definitions=varDef, 
+#'   stations_ids=stations_ids, 
+#'   nc_attributes=glob_attr, 
+#'   optional_vars = opt_metadatavars, 
+#'   lead_length=nLead, 
+#'   ensemble_length=nEns,
+#'   lead_time_tstep = "hours")
 #' 
 #' # Following is code that was used to create unit tests for EFTS.
 #' # This is kept in this example to provide sample on now to write data of various dimension.
@@ -103,29 +115,29 @@ open_efts <- function(ncfile, writein = FALSE) {
 #' # [3,] 0.13 0.23 0.33
 #' # [4,] 0.14 0.24 0.34
 #' for (i in 1:length(td)) {
-#'   for (j in 1:length(stations_varnames)) {
-#'     station <- stations_varnames[j]
+#'   for (j in 1:length(stations_ids)) {
+#'     station <- stations_ids[j]
 #'     var1Values <- i + 0.1*j + m
 #'     var2Values <- 2*var1Values
 #'     dtime = td[i]
 #'     snc$put_ensemble_forecasts(var1Values, variable_name = variable_names[1], 
-#'        identifier = station, start_time = dtime)
+#'       identifier = station, start_time = dtime)
 #'     snc$put_ensemble_forecasts(var2Values, variable_name = variable_names[2], 
-#'        identifier = station, start_time = dtime)
+#'       identifier = station, start_time = dtime)
 #'   }
 #' }
 #' 
 #' timeSteps <- 1:length(td)
-#' for (j in 1:length(stations_varnames)) {
+#' for (j in 1:length(stations_ids)) {
 #'   var3Values <- timeSteps + 0.1*j
 #'   var4Values <- var3Values + 0.01*timeSteps + 0.001*j
 #' 
-#'   station <- stations_varnames[j]
+#'   station <- stations_ids[j]
 #'   snc$put_single_series(var3Values, variable_name = variable_names[3], identifier = station)
 #'   snc$put_single_series(var4Values, variable_name = variable_names[4], identifier = station)
 #' }
 #' 
-#' for (j in 1:length(stations_varnames)) {
+#' for (j in 1:length(stations_ids)) {
 #' 
 #'   var5Xts <- matrix(rep(1:nEns, each=nTimeSteps) + timeSteps + 0.1*j, ncol=nEns)
 #' 
@@ -133,24 +145,35 @@ open_efts <- function(ncfile, writein = FALSE) {
 #'   var5Values <- t(var5Xts) 
 #'   var6Values <- 0.25 * var5Values
 #' 
-#'   station <- stations_varnames[j]
+#'   station <- stations_ids[j]
 #'   snc$put_ensemble_series(var5Values, variable_name = variable_names[5], identifier = station)
 #'   snc$put_ensemble_series(var6Values, variable_name = variable_names[6], identifier = station)
 #' }
+#' 
+#' # We can get/put values for some metadata variables:
+#' snc$get_values("x")
+#' snc$put_values(c(1.1, 2.2), "x")
+#' snc$put_values(letters[1:2], "station_name")
+#' 
+#' # Direct get/set access to data variables, however, is prevented;
+#' #  the following would thus cause an error:
+#' # snc$get_values("var1_fcast_ens")
+#' 
 #' snc$close()
 #' # Cleaning up temp file:
 #' if (file.exists(fname)) 
 #'   file.remove(fname)
-#'
+#' 
+#' 
 #' @export
 #' @import ncdf4
 #' @importFrom utils packageDescription
 #' @importFrom methods new
 #' @return A EftsDataSet object
-create_efts <- function(fname, time_dim_info, data_var_definitions, stations_varnames, station_names=NULL, 
+create_efts <- function(fname, time_dim_info, data_var_definitions, stations_ids, station_names=NULL, 
   nc_attributes=NULL, optional_vars=NULL, lead_length = 48, ensemble_length = 50, lead_time_tstep = "hours") {
   
-  if (missing(stations_varnames)) {
+  if (missing(stations_ids)) {
     stop("You must provide station identifiers when creating a new EFTS netCDF data set")
   }
   
@@ -167,7 +190,7 @@ create_efts <- function(fname, time_dim_info, data_var_definitions, stations_var
     
   varDefs <- create_efts_variables(data_var_definitions, 
                                     time_dim_info, 
-                                    num_stations = length(stations_varnames), 
+                                    num_stations = length(stations_ids), 
                                     lead_length = lead_length, 
                                     ensemble_length = ensemble_length,
                                     optional_vars = optional_vars,
@@ -176,7 +199,7 @@ create_efts <- function(fname, time_dim_info, data_var_definitions, stations_var
   ## Determine if there is real value in a tryCatch. What is the point if we cannot close/delete the file.
   # nc <- tryCatch(
   #   createSchema(fname, varDefs, data_var_definitions, nc_attributes, optional_vars, 
-  #     stations_varnames, lead_length, ensemble_length, station_names),
+  #     stations_ids, lead_length, ensemble_length, station_names),
   #   error = function(e) {
   #     stop(paste("netCDF schema creation failed", e))
   #     NULL
@@ -184,7 +207,7 @@ create_efts <- function(fname, time_dim_info, data_var_definitions, stations_var
   #   }
   # )
   nc <- createSchema(fname, varDefs, data_var_definitions, nc_attributes, optional_vars, 
-    stations_varnames, lead_length, ensemble_length, station_names)
+    stations_ids, lead_length, ensemble_length, station_names)
 
   return(EftsDataSet$new(nc))
 }
@@ -198,7 +221,7 @@ infoList <- function(theList) {
 }
 
 createSchema <- function(fname, varDefs, data_var_definitions, nc_attributes, optional_vars, 
-  stations_varnames, lead_length, ensemble_length, station_names=NA) {
+  stations_ids, lead_length, ensemble_length, station_names=NA) {
 
   allVars <- c(varDefs$datavars, varDefs$metadatavars)
   nc <- ncdf4::nc_create(fname, vars = allVars)
@@ -252,7 +275,7 @@ createSchema <- function(fname, varDefs, data_var_definitions, nc_attributes, op
   }
 
   ## populate metadata variables
-  ncdf4::ncvar_put(nc, station_id_varname, stations_varnames)
+  ncdf4::ncvar_put(nc, station_id_varname, stations_ids)
   ncdf4::ncvar_put(nc, lead_time_dim_name, 0:(lead_length - 1))
   ncdf4::ncvar_put(nc, ensemble_member_dim_name, 1:ensemble_length)
   if (!is.null(station_names)) {

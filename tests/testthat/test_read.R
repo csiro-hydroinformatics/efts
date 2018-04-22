@@ -2,7 +2,7 @@ context("Write-Read Round trip EFTS netCDF data set")
 
 tempNcFname <- tempfile()
 variable_names <- c("variable_1", "variable_2")
-stations_varnames <- c(123, 456)
+stations_ids <- c(123, 456)
 
 nEns <- 3
 nLead <- 4
@@ -14,9 +14,9 @@ timeAxisStart <- ISOdate(year = 2010, month = 8, day = 1, hour = 12, min = 0,
   sec = 0, tz = "UTC")
 start_time <- timeAxisStart + lubridate::hours(6L)
 v1 <- variable_names[1]
-s1 <- stations_varnames[1]
+s1 <- stations_ids[1]
 v2 <- variable_names[2]
-s2 <- stations_varnames[2]
+s2 <- stations_ids[2]
 time_dim_info <- create_time_info(from = timeAxisStart, n = 10)
 
 
@@ -38,7 +38,7 @@ doTests <- function() {
     glob_attr <- create_global_attributes(title="title test", institution="test", source="test", catchment="dummy", comment="none")
 
     snc <- create_efts(tempNcFname, time_dim_info, create_variable_definitions(varsDef), 
-      stations_varnames, nc_attributes=glob_attr, lead_length = nLead, ensemble_length = nEns)
+      stations_ids, nc_attributes=glob_attr, lead_length = nLead, ensemble_length = nEns)
     
     
     snc$put_ensemble_forecasts(x, variable_name = v1, identifier = s1, start_time = start_time)

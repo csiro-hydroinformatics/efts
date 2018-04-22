@@ -90,16 +90,15 @@ Similarly for optional geographic metadata variables:
 
 ```{r}
 snc <- create_efts(
-fname=fname,
-data_var_definitions=varDef,
-station_names=NULL,
-optional_vars=opt_metadatavars,
-ensemble_length=       
-time_dim_info=timeDimInfo,
-stations_varnames=stationIds,
-nc_attributes=global_attr,
-lead_length=nLead,
-ensemble_length=nEns)
+  fname=fname,
+  data_var_definitions=varDef,
+  optional_vars=opt_metadatavars,
+  time_dim_info=timeDimInfo,
+  stations_ids=stationIds,
+  station_names=NULL,
+  nc_attributes=global_attr,
+  lead_length=nLead,
+  ensemble_length=nEns)
 ```
 
 The default `print` method for this object snc is the same output as objects of class `ncdf4`

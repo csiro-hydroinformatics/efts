@@ -6,7 +6,7 @@ context("Test that time series are read with the expected time indexing")
 
 tempNcFname <- tempfile()
 variable_names <- c("variable_1", "variable_2")
-stations_varnames <- c(123, 456)
+stations_ids <- c(123, 456)
 
 nEns <- 3
 nLead <- 4
@@ -18,9 +18,9 @@ timeAxisStart <- ISOdate(year = 2015, month = 10, day = 4, hour = 0, min = 0,
   sec = 0, tz = "Australia/Canberra")
 start_time <- timeAxisStart + lubridate::hours(-1L)
 v1 <- variable_names[1]
-s1 <- stations_varnames[1]
+s1 <- stations_ids[1]
 v2 <- variable_names[2]
-s2 <- stations_varnames[2]
+s2 <- stations_ids[2]
 time_dim_info <- create_time_info(from = timeAxisStart, n = 24L, tzoffset = "+1000")
 
 

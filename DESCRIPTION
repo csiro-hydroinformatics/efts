@@ -9,8 +9,8 @@ Description: The binary file format netCDF is developed primarily for climate, o
     devised in the domain of ensemble hydrologic forecasting, but possibly applicable 
     in other domains. 'efts' uses reference class objects to access data, 
     hiding the low-level and bug prone netCDF and date-time operations.
-Version: 0.8-0
-Date: 2018-04-08
+Version: 0.9-0
+Date: 2018-04-22
 Authors@R: c( 
     person("Jean-Michel", "Perraud", email="jean-michel.perraud@csiro.au", role = c("aut","cre")),
     person("David", "Robertson", role = c("aut")),
