@@ -18,26 +18,23 @@ A EftsDataSet object
 Creates a EftsDataSet for access to a netCDF EFTS data set
 }
 \examples{
-\dontrun{
 library(efts)
-fname <- file.path(system.file(package='efts', 'data', 'simple.nc'))
-stopifnot(file.exists(fname))
-snc <- open_efts(fname)
+ext_data <- system.file('extdata', package='efts')
+ens_fcast_file <- file.path(ext_data, 'Upper_Murray_sample_ensemble_rain_fcast.nc')
+stopifnot(file.exists(ens_fcast_file))
+snc <- open_efts(ens_fcast_file)
 (variable_names <- snc$get_variable_names())
-stations_varnames <- snc$get_values('station_id')
+(stations_ids <- snc$get_values('station_id'))
 nEns <- snc$get_ensemble_size()
 nLead <- snc$get_lead_time_count()
 td <- snc$get_time_dim()
-# nTimeSteps <- 
-stopifnot('runoff_ens' \%in\% variable_names)
+stopifnot('rain_fcast_ens' \%in\% variable_names)
 
-obsRunoff <- snc$get_single_series('runoff_obs', stations_varnames[1])
-plot.zoo(obsRunoff, plot.type='single')
+ens_fcast_rainfall <- snc$get_ensemble_forecasts('rain_fcast_ens',
+  stations_ids[1], start_time=td[2])
+names(ens_fcast_rainfall) <- as.character(1:ncol(ens_fcast_rainfall))
+plot(ens_fcast_rainfall, legend.loc='right')
 
-ensRunoff <- snc$get_ensemble_series('runoff_ens', stations_varnames[1])
-plot.zoo(ensRunoff, plot.type='single')
+snc$close()
 
-ensFcastRunoff <- snc$get_ensemble_forecasts('runoff_fcast_ens',
-plot.zoo(ensFcastRunoff, plot.type='single')
-}
 }

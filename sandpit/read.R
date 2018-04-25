@@ -50,7 +50,7 @@ rain_fct_ens
 
 all_vars_names <- rain_fct_ens$get_variable_names()
 station_ids <- rain_fct_ens$get_values("station_id")
-variable_names <- "rain_fcast_ens"
+variable_names <- "rain_sim"
 
 issue_times <- rain_fct_ens$get_time_dim()
 

@@ -53,7 +53,7 @@ Other dimensions are easier to create. Variables are more involved; one way to d
 via a data frame. For instance, you can start from a stub such as created by the following:
 
 ```{r}
-variable_names <- c('rain_fcast_ens','pet_fcast_ens')
+variable_names <- c('rain_sim','pet_sim')
 varDef <- create_variable_definition_dataframe(variable_names=variable_names, long_names = rep('synthetic data', 2), dimensions=4L)
 str(varDef)
 ```

@@ -12,11 +12,12 @@
 #' @export
 #' @return a list 
 #' @examples
-#' \dontrun{
-#' create_variable_definition(name='rain_fcast_ens', 
-#    longname='Rainfall ensemble forecast derived from some prediction', units='mm', 
-#    missval=-9999.0, precision='double', var_attribute=list(type=2L))
-#' }
+#' var_def <- create_variable_definition(name='rain_der', 
+#'   longname='Rainfall ensemble forecast derived from some prediction', units='mm', 
+#'   missval=-9999.0, precision='double', var_attribute=list(type=2L, 
+#'     description="accumulated over the preceding interval", 
+#'     dat_type = "der", dat_type_description="AWAP data interpolated from observations",
+#'     location_type = "Point"))
 create_variable_definition <- function(name, longname = "", units = "mm", missval = -9999, 
   precision = "double", dim_type = "4", var_attribute = create_var_attribute_definition()) {
   if (missing(name)) 
@@ -40,16 +41,13 @@ create_variable_definition <- function(name, longname = "", units = "mm", missva
 #' @param missval numeric vector, missing value code(s) for the variable(s)
 #' @param precision character vector, precision of the variables
 #' @param dimensions character or integer vector, number of dimensions each variable (2, 3 or 4)
-#' @param type A data type identifier, as a coded description.
-#' @param type_description description of this data type identifier.
-#' @param location_type a character, type of location, e.g. 'Point'
+#' @param var_attributes a list of named attributes. See \code{\link{create_var_attribute_definition}} 
 #' @export
 #' @return a data frame suitable for \code{\link{create_variable_definition}}
 #' @seealso See
 #'    \code{\link{create_variable_definition}} and \code{\link{create_efts}} for examples
 create_variable_definition_dataframe <- function(variable_names, long_names = variable_names, standard_names = variable_names, units = "mm", missval = -9999, 
-  precision = "double", dimensions = 4L, type = 2L, type_description = "accumulated over the preceding interval", 
-  location_type = "Point") {
+  precision = "double", dimensions = 4L, var_attributes = create_var_attribute_definition()) {
   stopifnot(is.character(variable_names))
   varsDef <- data.frame(name = variable_names, stringsAsFactors = FALSE)
   varsDef$longname <- long_names
@@ -58,9 +56,13 @@ create_variable_definition_dataframe <- function(variable_names, long_names = va
   varsDef$missval <- missval
   varsDef$precision <- precision
   varsDef$dimensions <- as.integer(dimensions)
-  varsDef$type <- type
-  varsDef$type_description <- type_description
-  varsDef$location_type <- location_type
+
+  va <- data.frame(var_attributes, stringsAsFactors = FALSE)
+  if(nrow(va) < nrow(varsDef)) {
+    va <- va[ rep(1:nrow(va), length.out=nrow(varsDef)), ]
+  }
+
+  varsDef <- cbind(varsDef, va)
   rownames(varsDef) <- varsDef$name
   return(varsDef)
 }
@@ -122,17 +124,23 @@ default_optional_variable_definitions_v2_0 <- function() {
 #' str(create_variable_definitions(varsDef))
 #'
 create_variable_definitions <- function(dframe) {
-  dframe$rownum <- 1:nrow(dframe)
+  in_names <- names(dframe)
+  non_opt_attr <- c("name", "longname", "units", "missval", "precision", "dimensions")
+  varargs_attr <- setdiff(in_names, non_opt_attr)
   f <- function(varDef) {
-    create_variable_definition(name = varDef[["name"]], longname = varDef[["longname"]], 
-      units = varDef[["units"]], missval = varDef[["missval"]], precision = varDef[["precision"]], 
-      dim_type = varDef[["dimensions"]], var_attribute = create_var_attribute_definition(type = varDef[["type"]], 
-        type_description = varDef[["type_description"]], location_type = varDef[["location_type"]]))
+    create_variable_definition(
+      name = varDef[["name"]], 
+      longname = varDef[["longname"]], 
+      units = varDef[["units"]], 
+      missval = varDef[["missval"]], 
+      precision = varDef[["precision"]], 
+      dim_type = varDef[["dimensions"]], 
+      var_attribute = as.list(varDef[,varargs_attr]))
   }  # f
+  dframe$rownum <- 1:nrow(dframe)
   r <- plyr::dlply(.data = dframe, .variables = "rownum", .fun = f)
   names(r) <- rownames(dframe)
   return(r)
-
 }
 
 create_mandatory_vardefs <- function(station_dim, str_dim, ensemble_dim, lead_time_dim, lead_time_tstep = "hours") {

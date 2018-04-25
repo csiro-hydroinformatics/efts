@@ -85,7 +85,7 @@ EftsDataSet <- setRefClass("EftsDataSet", contains = "NetCdfDataSet", fields = l
     x$name
   }
   return(sapply(dims, f))
-}, get_ensemble_forecasts = function(variable_name = "rain_fcast_ens", identifier, dimension_id = get_stations_varname(), 
+}, get_ensemble_forecasts = function(variable_name = "rain_sim", identifier, dimension_id = get_stations_varname(), 
   start_time = NA, lead_time_count = NA) {
   "Return a time series, ensemble of forecasts over the lead time"
   stopifnot(variable_name %in% names(ncfile$var))
@@ -96,12 +96,12 @@ EftsDataSet <- setRefClass("EftsDataSet", contains = "NetCdfDataSet", fields = l
   check_index_found(index_id, identifier, dimension_id)
   lead_time_count <- ifelse(is.na(lead_time_count), get_lead_time_count(), lead_time_count[1])
   indTime <- index_for_time(start_time)
-  # float rain_fcast_ens[lead_time,station,ens_member,time]
+  # float rain_sim[lead_time,station,ens_member,time]
   ensData <- ncdf4::ncvar_get(ncfile, variable_name, start = c(1, index_id, 1, indTime), 
     count = c(lead_time_count, 1, nEns, 1), collapse_degen = FALSE)
   timeAxis <- start_time + lubridate::dhours(1) * ncfile$dim$lead_time$vals
   xts(x = ensData[, 1, , 1], order.by = timeAxis, tzone = tz(start_time))
-}, get_ensemble_for_stations = function(variable_name = "rain_fcast_ens", identifier, dimension_id = "ens_member", 
+}, get_ensemble_for_stations = function(variable_name = "rain_sim", identifier, dimension_id = "ens_member", 
   start_time = NA, lead_time_count = NA) {
   "Return a time series, representing a single ensemble member forecast for all stations over the lead time"
   # TODO revise this function. Unclear what the intent and context was
@@ -113,7 +113,7 @@ EftsDataSet <- setRefClass("EftsDataSet", contains = "NetCdfDataSet", fields = l
   lead_time_count <- ifelse(is.na(lead_time_count), get_lead_time_count(), lead_time_count[1])
   stationCount <- get_station_count()
   indTime <- index_for_time(start_time)
-  # float rain_fcast_ens[lead_time,station,ens_member,time]
+  # float rain_sim[lead_time,station,ens_member,time]
   ensData <- ncdf4::ncvar_get(ncfile, variable_name, start = c(1, 1, index_id, indTime), 
     count = c(lead_time_count, stationCount, 1, 1), collapse_degen = FALSE)
   timeAxis <- start_time + lubridate::dhours(1) * ncfile$dim$lead_time$vals
@@ -121,13 +121,13 @@ EftsDataSet <- setRefClass("EftsDataSet", contains = "NetCdfDataSet", fields = l
   out <- xts(x = ensData[, , 1, 1], order.by = timeAxis, tzone = tz(start_time))
   names(out) <- colnam
   return(out)
-}, get_ensemble_forecasts_for_station = function(variable_name = "rain_fcast_ens", identifier, dimension_id = get_stations_varname()) {
+}, get_ensemble_forecasts_for_station = function(variable_name = "rain_sim", identifier, dimension_id = get_stations_varname()) {
   "Return an array, representing all ensemble member forecasts for a single stations over all lead times"
   td <- get_time_dim()
   start_time <- td[1]
   index_id <- index_for_identifier(identifier, dimension_id)
   check_index_found(index_id, identifier, dimension_id)
-  # float rain_fcast_ens[lead_time,station,ens_member,time]
+  # float rain_sim[lead_time,station,ens_member,time]
   ensData <- ncdf4::ncvar_get(ncfile, variable_name, start = c(1, index_id, 1, 1), 
     count = c(-1, 1, -1, -1), collapse_degen = TRUE)
   return(ensData)
@@ -236,7 +236,7 @@ EftsDataSet <- setRefClass("EftsDataSet", contains = "NetCdfDataSet", fields = l
     index_id <- which(identifier == identValues)
   }
   index_id
-}, put_ensemble_forecasts = function(x, variable_name = "rain_fcast_ens", identifier, dimension_id = get_stations_varname(), 
+}, put_ensemble_forecasts = function(x, variable_name = "rain_sim", identifier, dimension_id = get_stations_varname(), 
   start_time = NA) {
   "Puts one or more ensemble forecast into a netCDF file"
   stopifnot(variable_name %in% names(ncfile$var))
@@ -257,7 +257,7 @@ EftsDataSet <- setRefClass("EftsDataSet", contains = "NetCdfDataSet", fields = l
     ncdf4::ncvar_put(ncfile, time_dim_name, outtime, start = c(indTime), count = c(1))
   }
   if (is.array(x)) {
-    # float rain_fcast_ens[lead_time,station,ens_member,time]
+    # float rain_sim[lead_time,station,ens_member,time]
     lead_time_count <- get_lead_time_count()
     ensData <- array(NA, dim = c(nLT_x, 1, nEns_x, 1))
     # print(c(dim(ensData),dim(x)))
@@ -267,7 +267,7 @@ EftsDataSet <- setRefClass("EftsDataSet", contains = "NetCdfDataSet", fields = l
   } else if (is.list(x)) {
     stop("lists of ensemble forecasts not supported yet")
   }
-}, put_ensemble_forecasts_for_station = function(x, variable_name = "rain_fcast_ens", identifier, dimension_id = "ens_member", 
+}, put_ensemble_forecasts_for_station = function(x, variable_name = "rain_sim", identifier, dimension_id = "ens_member", 
   start_time = NA) {
   "Puts a single ensemble member forecasts for all stations into a netCDF file"
   # TODO: review intent and purpose
@@ -295,7 +295,7 @@ EftsDataSet <- setRefClass("EftsDataSet", contains = "NetCdfDataSet", fields = l
   }
   ltsize <- nrow(x)
   if (is.array(x)) {
-    # float rain_fcast_ens[lead_time,station,ens_member,time]
+    # float rain_sim[lead_time,station,ens_member,time]
     lead_time_count <- get_lead_time_count()
     ensData <- array(NA, dim = c(lead_time_count, nStations, 1, 1))
     ensData[1:ltsize, , 1, 1] <- x

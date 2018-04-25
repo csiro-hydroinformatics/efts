@@ -44,7 +44,7 @@ open_efts <- function(ncfile, writein = FALSE) {
 #' @param fname file name to create to. The file must not exist already.
 #' @param time_dim_info a list with the units and values defining the time dimension of the data set
 #' @param data_var_definitions a data frame, acceptable by \code{\link{create_variable_definitions}}, or list of netCDF variable definitions, e.g. 
-#'       \code{list(rain_fcast_ens=list(name='rain_fcast_ens', longname='ECMWF Rainfall ensemble forecasts', units='mm', missval=-9999.0, precision='double', attributes=list(type=2, type_description='accumulated over the preceding interval')))}
+#'       \code{list(rain_sim=list(name='rain_sim', longname='ECMWF Rainfall ensemble forecasts', units='mm', missval=-9999.0, precision='double', attributes=list(type=2, type_description='accumulated over the preceding interval')))}
 #' @param stations_ids station identifiers, coercible to an integer vector (note: may change to be a more flexible character storage)
 #' @param station_names optional; names of the stations
 #' @param nc_attributes a named list of characters, attributes for the whole file, 
@@ -58,7 +58,15 @@ open_efts <- function(ncfile, writein = FALSE) {
 #' @param ensemble_length number of ensembles, i.e. number of forecasts for each point on the main time axis of the data set
 #' @examples
 #'
+#' # NOTE
+#' # The sample code below is purposely generic; to produce 
+#' # a data set conforming with the conventions devised for 
+#' # ensemble streamflow forecast you will need to 
+#' # follow the additional guidelines at 
+#' # https://github.com/jmp75/efts/blob/master/docs/netcdf_for_water_forecasting.md
+#'
 #' fname <- tempfile()
+#' 
 #' stations_ids <- c(123,456)
 #' nEns <- 3
 #' nLead <- 4
@@ -75,10 +83,20 @@ open_efts <- function(ncfile, writein = FALSE) {
 #' 
 #' variable_names <- c('var1_fcast_ens','var2_fcast_ens', 'var1_obs', 
 #'   'var2_obs', 'var1_ens','var2_ens')
+#' 
+#' va <- create_var_attribute_definition(
+#'   type = 2L, 
+#'   type_description = "accumulated over the preceding interval", 
+#'   dat_type = "der", 
+#'   dat_type_description = paste(rep(c("var1", "var2"), 3), "synthetic test data"),
+#'   location_type = "Point")
+#' 
+#' 
 #' (varDef <- create_variable_definition_dataframe(
 #'   variable_names=variable_names, 
 #'   long_names = paste(variable_names, 'synthetic data'), 
-#'   dimensions = c(4L,4L,2L,2L,3L,3L)))
+#'   dimensions = c(4L,4L,2L,2L,3L,3L),
+#'   var_attributes = va))
 #' 
 #' glob_attr <- create_global_attributes(
 #'   title="data set title", 
@@ -164,6 +182,7 @@ open_efts <- function(ncfile, writein = FALSE) {
 #' if (file.exists(fname)) 
 #'   file.remove(fname)
 #' 
+#'  
 #' 
 #' @export
 #' @import ncdf4

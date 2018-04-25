@@ -28,15 +28,15 @@ Reference class convenient for access to a Ensemble Forecast Time Series in netC
 
 \item{\code{get_dim_names()}}{Gets the name of all dimensions in the data set}
 
-\item{\code{get_ensemble_for_stations(variable_name = "rain_fcast_ens", identifier,
+\item{\code{get_ensemble_for_stations(variable_name = "rain_sim", identifier,
   dimension_id = "ens_member", start_time = NA, lead_time_count = NA)}}{Return a time series, representing a single ensemble member forecast for all stations over the lead time}
 
-\item{\code{get_ensemble_forecasts(variable_name = "rain_fcast_ens", identifier,
+\item{\code{get_ensemble_forecasts(variable_name = "rain_sim", identifier,
   dimension_id = get_stations_varname(), start_time = NA,
   lead_time_count = NA)}}{Return a time series, ensemble of forecasts over the lead time}
 
-\item{\code{get_ensemble_forecasts_for_station(variable_name = "rain_fcast_ens",
-  identifier, dimension_id = get_stations_varname())}}{Return an array, representing all ensemble member forecasts for a single stations over all lead times}
+\item{\code{get_ensemble_forecasts_for_station(variable_name = "rain_sim", identifier,
+  dimension_id = get_stations_varname())}}{Return an array, representing all ensemble member forecasts for a single stations over all lead times}
 
 \item{\code{get_ensemble_series(variable_name = "rain_ens", identifier,
   dimension_id = get_stations_varname())}}{Return an ensemble of point time series for a station identifier}
@@ -72,11 +72,11 @@ Reference class convenient for access to a Ensemble Forecast Time Series in netC
 
 \item{\code{initialize(nc = NULL)}}{Create an object wrapping an ncdf4 object}
 
-\item{\code{put_ensemble_forecasts(x, variable_name = "rain_fcast_ens", identifier,
+\item{\code{put_ensemble_forecasts(x, variable_name = "rain_sim", identifier,
   dimension_id = get_stations_varname(), start_time = NA)}}{Puts one or more ensemble forecast into a netCDF file}
 
-\item{\code{put_ensemble_forecasts_for_station(x, variable_name = "rain_fcast_ens",
-  identifier, dimension_id = "ens_member", start_time = NA)}}{Puts a single ensemble member forecasts for all stations into a netCDF file}
+\item{\code{put_ensemble_forecasts_for_station(x, variable_name = "rain_sim", identifier,
+  dimension_id = "ens_member", start_time = NA)}}{Puts a single ensemble member forecasts for all stations into a netCDF file}
 
 \item{\code{put_ensemble_series(x, variable_name = "rain_ens", identifier,
   dimension_id = get_stations_varname())}}{Puts an ensemble of time series, e.g. replicate rainfall series}

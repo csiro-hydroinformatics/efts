@@ -5,19 +5,30 @@
 #' @param type A data type identifier, as a coded description.
 #' @param type_description description of this data type identifier.
 #' @param location_type a character, type of location, e.g. 'Point'
+#' @param dat_type a character, the type of data stored in this variable
+#' @param dat_type_description a character, human readable description of the data stored in this variable
 #' @export
 #' @return a list of attributes, describing the type of variable stored
 #' @examples
 #' va <- create_var_attribute_definition(type=2L, 
 #'   type_description='accumulated over the preceding interval', location_type='Point')
-#' vdef <- create_variable_definition(name='rain_fcast_ens', 
+#' vdef <- create_variable_definition(name='rain_sim', 
 #'   longname='Rainfall ensemble forecast derived from some prediction', 
 #'   units='mm', missval=-9999.0, precision='double', 
 #'   var_attribute=va)
 #'
-create_var_attribute_definition <- function(type = 2L, type_description = "accumulated over the preceding interval", 
+create_var_attribute_definition <- function(
+  type = 2L, 
+  type_description = "accumulated over the preceding interval", 
+  dat_type = "der", 
+  dat_type_description = "AWAP data interpolated from observations",
   location_type = "Point") {
-  list(type = type, type_description = type_description, location_type = location_type)
+  list(
+    type = type, 
+    type_description = type_description, 
+    dat_type = dat_type,
+    dat_type_description = dat_type_description,
+    location_type = location_type)
 }
 
 # The following cannot be hard-coded.  ncdf4::ncatt_put(nc,0,'institution',
