@@ -34,6 +34,9 @@ devtools::check(efts_dir, document = TRUE,
 devtools::build(efts_dir)
 # To use the CRAN win-builder
 devtools::build_win(pkg = efts_dir, version = c("R-release", "R-devel"))
+
+devtools::submit_cran(pkg = efts_dir)
+
 ```
 
 ```sh
