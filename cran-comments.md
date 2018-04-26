@@ -1,10 +1,10 @@
-## Changes since last submission
+## Resubmission
 
-* Address feedback given by CRAN reviewer.
-    * use single quote 'efts' for refering to the package in DESCRIPTION and elsewhere.
-    * function examples are not marked 'dontrun'
+* Address feedback kindly given by the CRAN reviewer:
+    * use single quote around packages and software names ('efts' and 'netCDF') in DESCRIPTION.
+    * function examples are not marked as 'dontrun' or 'donttest'
     * all tests, examples, vignettes use 'tempfile()' for transient file creation
-* Facilities and stricter checks for compliance with the netCDF convention.
+* Functional changes: facilities and stricter checks for compliance with the proposed netCDF convention.
 
 ## Test environments
 
