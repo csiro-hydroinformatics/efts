@@ -28,6 +28,10 @@ For CRAN submission checks:
 ```R
 devtools::check(efts_dir, cran=TRUE)
 
+devtools::check(efts_dir, document = TRUE, 
+  manual = TRUE, cran = TRUE, check_version = TRUE,
+  force_suggests = TRUE, run_dont_test = TRUE)
+
 devtools::build(efts_dir)
 # To use the CRAN win-builder
 devtools::build_win(pkg = efts_dir, version = c("R-release", "R-devel"))
