@@ -11,6 +11,11 @@ efts_dir <- '~/src/github_jm/efts'
 devtools::document(efts_dir)
 devtools::test(efts_dir)
 devtools::build(efts_dir, vignettes = FALSE)
+```
+
+Rmarkdown will require the external prog pandoc to be installed.
+
+```R
 setwd(efts_dir)
 rmarkdown::render("README.Rmd")
 ```

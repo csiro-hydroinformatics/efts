@@ -34,7 +34,7 @@ install.packages("efts")
 # install.packages("devtools")
 devtools::install_github("jmp75/efts")
 ```
-Loading
+
 ## Example use
 
 This is an extract from one of the package vignettes.
