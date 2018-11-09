@@ -45,6 +45,8 @@ Reference class convenient for access to a Ensemble Forecast Time Series in netC
 
 \item{\code{get_lead_time_count()}}{Length of the lead time dimension}
 
+\item{\code{get_lead_time_unit()}}{Gets the time units of a read time series, i.e. "hours since forecast time". Returns the string "hours"}
+
 \item{\code{get_single_series(variable_name = "rain_obs", identifier,
   dimension_id = get_stations_varname())}}{Return a single point time series for a station identifier. Falls back on get_all_series if the argument "identifier" is missing}
 
