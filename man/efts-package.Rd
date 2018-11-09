@@ -14,7 +14,7 @@ Package: \tab efts\cr
 Type: \tab Package\cr
 Version: \tab 0.9-0\cr
 Date: \tab 2018-04-22\cr
-Release Notes: \tab Facilities and stricter checks for comliance with netCDF EFTS conventions. Fixes for addressing feedback from previous CRAN submission. \cr
+Release Notes: \tab Facilities and stricter checks for compliance with netCDF EFTS conventions. Fixes for addressing feedback from previous CRAN submission. \cr
 License: \tab GPL-2 \cr
 }
 
