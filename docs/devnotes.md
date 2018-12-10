@@ -7,10 +7,11 @@
 library(testthat)
 library(devtools)
 efts_dir <- '~/src/github_jm/efts'
-# efts_dir <- 'c:/src/github_jm/efts'
+efts_dir <- 'c:/src/github_jm/efts'
 devtools::document(efts_dir)
 devtools::test(efts_dir)
 devtools::build(efts_dir, vignettes = FALSE)
+devtools::build(efts_dir, binary=TRUE)
 ```
 
 Rmarkdown will require the external prog pandoc to be installed.
@@ -47,12 +48,15 @@ devtools::submit_cran(pkg = efts_dir)
 ```sh
 R CMD build efts
 R CMD check efts_0.7.0.tar.gz 
+R CMD INSTALL --build efts_0.9.0.tar.gz 
 ```
 
 ```R
+install.packages('X:/Staff/per202/Software/swift/tmp/efts_0.9-0.zip')
 library(efts)
 help('efts', help_type='html')
 ```
+
 
 ```R
 timeAxisStart <- ISOdate(2015, 10, 4, 0, 0, 0, tz = "Australia/Canberra")
