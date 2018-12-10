@@ -295,7 +295,7 @@ createSchema <- function(fname, varDefs, data_var_definitions, nc_attributes, op
 
   ## populate metadata variables
   ncdf4::ncvar_put(nc, station_id_varname, stations_ids)
-  ncdf4::ncvar_put(nc, lead_time_dim_name, 0:(lead_length - 1))
+  ncdf4::ncvar_put(nc, lead_time_dim_name, 1:lead_length)
   ncdf4::ncvar_put(nc, ensemble_member_dim_name, 1:ensemble_length)
   if (!is.null(station_names)) {
     ncdf4::ncvar_put(nc, station_name_varname, station_names)
