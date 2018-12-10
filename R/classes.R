@@ -209,6 +209,12 @@ EftsDataSet <- setRefClass("EftsDataSet", contains = "NetCdfDataSet", fields = l
 }, get_lead_time_count = function() {
   "Length of the lead time dimension"
   ncfile$dim$lead_time$len
+}, get_lead_time_values = function() {
+  "Gets the values for the lead time dimension (typically, lead time steps since forecast issue time)"
+  get_values(lead_time_dim_name)
+}, put_lead_time_values = function(x) {
+  "Sets the values for the lead time dimension"
+  put_values(x, lead_time_dim_name)
 }, get_station_count = function() {
   "Length of the lead time dimension"
   ncfile$dim$station$len

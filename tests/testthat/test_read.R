@@ -50,7 +50,9 @@ doTests <- function(lead_time_tstep = "hours", time_step = "hours since", time_s
 
     snc <- create_efts(tempNcFname, time_dim_info, create_variable_definitions(varsDef), 
       stations_ids, nc_attributes=glob_attr, lead_length = nLead, ensemble_length = nEns, lead_time_tstep=lead_time_tstep)
-        
+    lead_times_offsets <- seq(from=lead_time_step_start_offset, length.out=nLead, by= lead_time_step_delta) 
+    snc$put_lead_time_values(lead_times_offsets)
+
     snc$put_ensemble_forecasts(x, variable_name = v1, identifier = s1, start_time = tested_fcast_issue_time)
     snc$put_ensemble_forecasts(y, variable_name = v2, identifier = s2, start_time = tested_fcast_issue_time)
     
