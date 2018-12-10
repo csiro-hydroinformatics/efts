@@ -68,6 +68,11 @@ EftsDataSet <- setRefClass("EftsDataSet", contains = "NetCdfDataSet", fields = l
   inTimeUnits <- get_time_units(ncfile, time_dim_name = "time")
   tu <- unlist(strsplit(inTimeUnits, " "))[1]
   return(tu)
+}, get_lead_time_unit = function() {
+  "Gets the time units of a read time series, i.e. \"hours since forecast time\". Returns the string \"hours\""
+  inTimeUnits <- get_time_units(ncfile, time_dim_name = "lead_time")
+  tu <- unlist(strsplit(inTimeUnits, " "))[1]
+  return(tu)
 }, get_variable_names = function() {
   "Gets the name of all variables in the data set"
   return(names(ncfile$var))
@@ -98,9 +103,15 @@ EftsDataSet <- setRefClass("EftsDataSet", contains = "NetCdfDataSet", fields = l
   indTime <- index_for_time(start_time)
   # float rain_sim[lead_time,station,ens_member,time]
   ensData <- ncdf4::ncvar_get(ncfile, variable_name, start = c(1, index_id, 1, indTime), 
-    count = c(lead_time_count, 1, nEns, 1), collapse_degen = FALSE)
-  timeAxis <- start_time + lubridate::dhours(1) * ncfile$dim$lead_time$vals
-  xts(x = ensData[, 1, , 1], order.by = timeAxis, tzone = tz(start_time))
+  count = c(lead_time_count, 1, nEns, 1), collapse_degen = FALSE)
+  tu <- get_lead_time_unit()
+  if (tu == "days"){
+    timeAxis <- start_time + lubridate::ddays(1) * ncfile$dim$lead_time$vals
+  } else {
+    timeAxis <- start_time + lubridate::dhours(1) * ncfile$dim$lead_time$vals
+  }
+  out <- xts(x = ensData[, 1, , 1], order.by = timeAxis, tzone = tz(start_time))
+  return(out)
 }, get_ensemble_for_stations = function(variable_name = "rain_sim", identifier, dimension_id = "ens_member", 
   start_time = NA, lead_time_count = NA) {
   "Return a time series, representing a single ensemble member forecast for all stations over the lead time"
@@ -116,7 +127,12 @@ EftsDataSet <- setRefClass("EftsDataSet", contains = "NetCdfDataSet", fields = l
   # float rain_sim[lead_time,station,ens_member,time]
   ensData <- ncdf4::ncvar_get(ncfile, variable_name, start = c(1, 1, index_id, indTime), 
     count = c(lead_time_count, stationCount, 1, 1), collapse_degen = FALSE)
-  timeAxis <- start_time + lubridate::dhours(1) * ncfile$dim$lead_time$vals
+  tu <- get_lead_time_unit()
+  if (tu == "days"){
+    timeAxis <- start_time + lubridate::ddays(1) * ncfile$dim$lead_time$vals
+  } else {
+    timeAxis <- start_time + lubridate::dhours(1) * ncfile$dim$lead_time$vals
+  }
   colnam <- get_values(station_id_varname)
   out <- xts(x = ensData[, , 1, 1], order.by = timeAxis, tzone = tz(start_time))
   names(out) <- colnam

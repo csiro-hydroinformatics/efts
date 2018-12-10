@@ -12,6 +12,11 @@ devtools::document(efts_dir)
 devtools::test(efts_dir)
 devtools::build(efts_dir, vignettes = FALSE)
 devtools::build(efts_dir, binary=TRUE)
+```
+
+Rmarkdown will require the external prog pandoc to be installed.
+
+```R
 setwd(efts_dir)
 rmarkdown::render("README.Rmd")
 ```
@@ -35,6 +40,9 @@ devtools::check(efts_dir, document = TRUE,
 devtools::build(efts_dir)
 # To use the CRAN win-builder
 devtools::build_win(pkg = efts_dir, version = c("R-release", "R-devel"))
+
+devtools::submit_cran(pkg = efts_dir)
+
 ```
 
 ```sh

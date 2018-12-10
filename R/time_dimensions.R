@@ -80,6 +80,7 @@ create_time_info <- function(from, n, time_step = "hours since", time_step_delta
 #' @param time_zone the time zone to use for the returned value.
 #' @export
 #' @importFrom udunits2 ud.convert
+#' @importFrom stringr str_split
 #' @import lubridate
 #' @return A POSIXct object, origin of the time dimension as defined
 #' @examples
@@ -91,15 +92,24 @@ create_time_info <- function(from, n, time_step = "hours since", time_step_delta
 #' get_start_date(x,time_zone = 'Australia/Canberra')
 #'
 get_start_date <- function(time_units, time_zone = "UTC") {
-  refDate <- lubridate::origin  # 
-  class(refDate) <- c("POSIXct", "POSIXt")  # workaround what I think is a lubridate bug; try origin + days(1)  and its effect, visibly because of class ordering on origin.
-  isDaily <- is_daily_time_step(time_units)
-  refDateUnits <- paste(ifelse(isDaily, "days", "hours"), "since 1970-01-01 00:00:00 +0000")
-  offsetSinceRef <- udunits2::ud.convert(0, time_units, refDateUnits)
-  offsetFun <- get_time_step_function(time_units)
-  startDateUtc <- refDate + offsetFun(offsetSinceRef)
-  startDate <- lubridate::with_tz(startDateUtc, time_zone)
-  return(startDate)
+
+  # temporary work around https://github.com/jmp75/efts/issues/3
+  udu <- stringr::str_split(time_units, pattern = ' +')[[1]]
+  s <- paste(udu[3], udu[4], sep='T')
+  dt <- ymd_hms(s)
+  if(is.na(dt)) stop(paste0('Could not parse date time out of string ', time_units))
+  return(dt)
+
+  # refDate <- lubridate::origin  # 
+  # class(refDate) <- c("POSIXct", "POSIXt")  # workaround what I think is a lubridate bug (possibly now wolved); 
+  # # try origin + days(1)  and its effect, visibly because of class ordering on origin.
+  # isDaily <- is_daily_time_step(time_units)
+  # refDateUnits <- paste(ifelse(isDaily, "days", "hours"), "since 1970-01-01 00:00:00 +0000")
+  # offsetSinceRef <- udunits2::ud.convert(0, time_units, refDateUnits)
+  # offsetFun <- get_time_step_function(time_units)
+  # startDateUtc <- refDate + offsetFun(offsetSinceRef)
+  # startDate <- lubridate::with_tz(startDateUtc, time_zone)
+  # return(startDate)
 }
 
 #' Retrieves the unit string of the time dimension from a netCDF file
