@@ -47,8 +47,8 @@ devtools::submit_cran(pkg = efts_dir)
 
 ```sh
 R CMD build efts
-R CMD check efts_0.7.0.tar.gz 
-R CMD INSTALL --build efts_0.9.0.tar.gz 
+R CMD check efts_0.7.0.tar.gz
+R CMD INSTALL --build efts_0.9.0.tar.gz
 ```
 
 ```R
@@ -56,7 +56,6 @@ install.packages('X:/Staff/per202/Software/swift/tmp/efts_0.9-0.zip')
 library(efts)
 help('efts', help_type='html')
 ```
-
 
 ```R
 timeAxisStart <- ISOdate(2015, 10, 4, 0, 0, 0, tz = "Australia/Canberra")
@@ -72,8 +71,9 @@ create_time_info(from, n, time_step = "hours since", time_step_delta = 1L, tzoff
 
 # Troubleshooting 
 
-A note: I need to reinstall roxygen2. Something got messed up ans xml2 failed to install. 
-```
+A note: I need to reinstall roxygen2. Something got messed up ans xml2 failed to install.
+
+```txt
   libicui18n.so.58: cannot open shared object file: No such file or directory
 ```
 
@@ -83,4 +83,5 @@ doing full txt search with `locate` I notice that I have a `~/anaconda2/lib/libi
 # added by Anaconda2 installer to .bashrc
 export PATH="/home/per202/anaconda2/bin:$PATH"
 ```
+
 Sure enough removing that fixes things.
