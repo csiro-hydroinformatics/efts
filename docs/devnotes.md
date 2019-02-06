@@ -2,6 +2,10 @@
 [Using Rmd format for generating Readme.md](http://stat545.com/packages05_foofactors-package-02.html#use-readme.rmd)
 
 ```R
+install.packages(c('devtools','testthat','efts','knitr','rmarkdown','roxygen2'), repos='https://cran.csiro.au')
+```
+
+```R
 library(testthat)
 library(devtools)
 efts_dir <- '~/src/github_jm/efts'
@@ -32,7 +36,8 @@ For CRAN submission checks:
 devtools::check(efts_dir, cran=TRUE)
 
 devtools::check(efts_dir, document = TRUE, 
-  manual = TRUE, cran = TRUE, check_version = TRUE,
+  manual = TRUE, cran = TRUE, 
+  #check_version = TRUE,
   force_suggests = TRUE, run_dont_test = TRUE)
 
 devtools::build(efts_dir)
