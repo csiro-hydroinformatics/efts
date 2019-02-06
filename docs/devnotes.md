@@ -1,7 +1,5 @@
 
-
 [Using Rmd format for generating Readme.md](http://stat545.com/packages05_foofactors-package-02.html#use-readme.rmd)
-
 
 ```R
 library(testthat)

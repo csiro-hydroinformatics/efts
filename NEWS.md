@@ -1,3 +1,15 @@
+Version 0.9.1
+=============
+
+### Fixes
+
+* [Workaround a possible change of behavior in lubridate and/or udunits that cause issues with date time arithmetics. Led to incorrect time dimension, offset by a second compared to user specifications.](https://github.com/jmp75/efts/issues/3)
+* [Remove assumption that lead_time dimension is in hours.](https://github.com/jmp75/efts/issues/6)
+
+### Improvements
+
+* [Make it easier to specify the lead time axis](https://github.com/jmp75/efts/issues/7)
+
 Version 0.9.0
 =============
 

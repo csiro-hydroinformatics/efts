@@ -18,7 +18,7 @@ library(devtools)
 efts_dir <- '~/src/github_jm/efts'
 devtools::document(efts_dir)
 devtools::test(efts_dir)
-devtools::check(efts_dir, document = TRUE, 
+devtools::check(efts_dir, document = TRUE,
   manual = TRUE, cran = TRUE, check_version = TRUE,
   force_suggests = TRUE, run_dont_test = TRUE)
 devtools::build_win(pkg = efts_dir, version = c("R-release", "R-devel"))
