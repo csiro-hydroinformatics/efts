@@ -1,16 +1,14 @@
 ## Resubmission
 
-* Address feedback kindly given by the CRAN reviewer:
-    * use single quote around packages and software names ('efts' and 'netCDF') in DESCRIPTION.
-    * function examples are not marked as 'dontrun' or 'donttest'
-    * all tests, examples, vignettes use 'tempfile()' for transient file creation
-* Functional changes: facilities and stricter checks for compliance with the proposed netCDF convention.
+Maintenance release with a few fixes and a minor feature listed in news.md
 
 ## Test environments
 
-* Local Linux Debian, R 3.4.4
-* Local Windows 7 R 3.4.4 
-* win-builder (devel and release)
+* Local Linux Debian, R 3.5.2
+* Local Windows 10 R 3.5.2
+* win-builder (release and devel)
+
+some tests with win-builder R-devel fail, but I cannot be reproduced on a locally Windows 10 R 3.6.0 prerelease. `devtools::test(...)` passes, though devtools::check fails to run the tests with an error that appears external to `efts`.
 
 ```R
 library(testthat)
@@ -26,14 +24,10 @@ devtools::build_win(pkg = efts_dir, version = c("R-release", "R-devel"))
 
 ## R CMD check results
 
+win-builder (release) and Linux:
+
 No ERRORs or WARNINGs
-
-1 NOTE which I interpret as unavoidable:
-Maintainer: 'Jean-Michel Perraud <jean-michel.perraud@csiro.au>'
-New submission
-
 
 ## Downstream dependencies
 
 None
-
