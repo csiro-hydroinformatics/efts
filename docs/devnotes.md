@@ -55,7 +55,6 @@ R CMD INSTALL --build efts_0.9.0.tar.gz
 ```
 
 ```R
-install.packages('X:/Staff/per202/Software/swift/tmp/efts_0.9-0.zip')
 library(efts)
 help('efts', help_type='html')
 ```
@@ -84,7 +83,7 @@ doing full txt search with `locate` I notice that I have a `~/anaconda2/lib/libi
 
 ```sh
 # added by Anaconda2 installer to .bashrc
-export PATH="/home/per202/anaconda2/bin:$PATH"
+export PATH="/home/xxxyyy/anaconda2/bin:$PATH"
 ```
 
 Sure enough removing that fixes things.
