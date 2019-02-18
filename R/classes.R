@@ -90,6 +90,26 @@ EftsDataSet <- setRefClass("EftsDataSet", contains = "NetCdfDataSet", fields = l
     x$name
   }
   return(sapply(dims, f))
+},  add_variable = function(varDef) {
+  "Adds a variable to the netcdf file"
+  stopifnot(!(varDef$name %in% names(ncfile$var)))
+  station_dim <- ncfile$dim[['station']]
+  time_dim <- ncfile$dim[['time']]
+  ensemble_dim <- ncfile$dim[['ens_member']]
+  lead_time_dim <- ncfile$dim[['lead_time']]
+  
+  dimensions <- switch(as.numeric(varDef$dim_type), list(station_dim),  
+	list(station_dim, time_dim),
+	list(station_dim, ensemble_dim, time_dim),
+	list(lead_time_dim,station_dim, ensemble_dim, time_dim))
+
+  vDef <- create_data_variable(varDef, dimensions) 
+  ncdf4::ncvar_add(ncfile,vDef)
+  
+  ncdf4::nc_enddef(ncfile)
+ # ncdf4::nc_close(ncfile)
+ # ncfile <- ncdf4::nc_open(fname, write = TRUE, readunlim = FALSE)
+  return()
 }, get_ensemble_forecasts = function(variable_name = "rain_sim", identifier, dimension_id = get_stations_varname(), 
   start_time = NA, lead_time_count = NA) {
   "Return a time series, ensemble of forecasts over the lead time"
@@ -366,7 +386,7 @@ EftsDataSet <- setRefClass("EftsDataSet", contains = "NetCdfDataSet", fields = l
     }
     ensData <- array(x, dim = c(1, nEns, nSteps))
     # ensData[1,,] <- x
-    ncdf4::ncvar_put(ncfile, variable_name, ensData, start = c(index_id, 1, 1), count = c(1, 
+    ncdf4::ncvar_put(ncfile, variable_name, ensData, start = c(1,index_id, 1, 1), count = c(1,1, 
       nEns, nSteps))
   } else {
     stop(paste("putting data of type", class(x), "not yet supported"))
