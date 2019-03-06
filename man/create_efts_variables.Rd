@@ -4,8 +4,8 @@
 \alias{create_efts_variables}
 \title{Create netCDF variables according to the definition}
 \usage{
-create_efts_variables(data_var_def, time_dim_info, num_stations, lead_length,
-  ensemble_length, optional_vars, lead_time_tstep)
+create_efts_variables(data_var_def, time_dim_info, num_stations,
+  lead_length, ensemble_length, optional_vars, lead_time_tstep)
 }
 \arguments{
 \item{data_var_def}{a list, with each item itself a list suitable as a variable definition argument to create_data_variable}

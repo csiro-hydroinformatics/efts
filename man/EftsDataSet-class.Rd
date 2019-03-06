@@ -47,6 +47,8 @@ Reference class convenient for access to a Ensemble Forecast Time Series in netC
 
 \item{\code{get_lead_time_unit()}}{Gets the time units of a read time series, i.e. "hours since forecast time". Returns the string "hours"}
 
+\item{\code{get_lead_time_values()}}{Gets the values for the lead time dimension (typically, lead time steps since forecast issue time)}
+
 \item{\code{get_single_series(variable_name = "rain_obs", identifier,
   dimension_id = get_stations_varname())}}{Return a single point time series for a station identifier. Falls back on get_all_series if the argument "identifier" is missing}
 
@@ -82,6 +84,8 @@ Reference class convenient for access to a Ensemble Forecast Time Series in netC
 
 \item{\code{put_ensemble_series(x, variable_name = "rain_ens", identifier,
   dimension_id = get_stations_varname())}}{Puts an ensemble of time series, e.g. replicate rainfall series}
+
+\item{\code{put_lead_time_values(x)}}{Sets the values for the lead time dimension}
 
 \item{\code{put_single_series(x, variable_name = "rain_obs", identifier,
   dimension_id = get_stations_varname(), start_time = NA)}}{Puts a time series, or part thereof}
