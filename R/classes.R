@@ -90,6 +90,26 @@ EftsDataSet <- setRefClass("EftsDataSet", contains = "NetCdfDataSet", fields = l
     x$name
   }
   return(sapply(dims, f))
+},  add_variable = function(varDef) {
+  "Adds a variable to the netcdf file"
+  stopifnot(!(varDef$name %in% names(ncfile$var)))
+  station_dim <- ncfile$dim[['station']]
+  time_dim <- ncfile$dim[['time']]
+  ensemble_dim <- ncfile$dim[['ens_member']]
+  lead_time_dim <- ncfile$dim[['lead_time']]
+  
+  dimensions <- switch(as.numeric(varDef$dim_type), list(station_dim),  
+	list(station_dim, time_dim),
+	list(station_dim, ensemble_dim, time_dim),
+	list(lead_time_dim,station_dim, ensemble_dim, time_dim))
+
+  vDef <- create_data_variable(varDef, dimensions) 
+  ncdf4::ncvar_add(ncfile,vDef)
+  
+  ncdf4::nc_enddef(ncfile)
+ # ncdf4::nc_close(ncfile)
+ # ncfile <- ncdf4::nc_open(fname, write = TRUE, readunlim = FALSE)
+  return()
 }, get_ensemble_forecasts = function(variable_name = "rain_sim", identifier, dimension_id = get_stations_varname(), 
   start_time = NA, lead_time_count = NA) {
   "Return a time series, ensemble of forecasts over the lead time"
@@ -193,9 +213,9 @@ EftsDataSet <- setRefClass("EftsDataSet", contains = "NetCdfDataSet", fields = l
   check_index_found(index_id, identifier, dimension_id)
   nEns <- get_ensemble_size()
   # float rain_ens[station,ens_member,time]
-  rawData <- ncdf4::ncvar_get(ncfile, variable_name, start = c(index_id, 1, 1), count = c(1, 
+  rawData <- ncdf4::ncvar_get(ncfile, variable_name, start = c(1,index_id, 1, 1), count = c(1,1, 
     nEns, length(td)), collapse_degen = FALSE)
-  x <- rawData[1, , ]
+  x <- rawData[1,1, , ]
   tsData <- (x)  # [ens_member,time] to [time,ens_member]
   xts(x = t(tsData), nrow = length(td), order.by = td, tzone = tz(td))
 }, get_time_dim = function() {
@@ -370,9 +390,9 @@ EftsDataSet <- setRefClass("EftsDataSet", contains = "NetCdfDataSet", fields = l
       stop(paste("number of columns in the input array is not equal to the length of the time dimension", 
         ncol(x), "!=", nSteps))
     }
-    ensData <- array(x, dim = c(1, nEns, nSteps))
+    ensData <- array(x, dim = c(1,1, nEns, nSteps))
     # ensData[1,,] <- x
-    ncdf4::ncvar_put(ncfile, variable_name, ensData, start = c(index_id, 1, 1), count = c(1, 
+    ncdf4::ncvar_put(ncfile, variable_name, ensData, start = c(1,index_id, 1, 1), count = c(1,1, 
       nEns, nSteps))
   } else {
     stop(paste("putting data of type", class(x), "not yet supported"))
