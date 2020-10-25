@@ -4,7 +4,7 @@
 
 The [present document at the efts repository](https://github.com/jmp75/efts/blob/master/docs/netcdf_for_water_forecasting.md) is a possibly temporary copy for convenient reference. The point of truth is at [this location](https://confluence.csiro.au/display/wirada/netCDF+for+Water+Forecasting+Specification+v2.0) which is not yet public as of March 2018. 
 
-Credits for the original document go to James Bennett (CSIRO) 
+Credits for the original document go to [James Bennett (CSIRO)](https://people-my.csiro.au/B/J/james-bennett) 
 
 ## Purpose
 
@@ -20,7 +20,7 @@ Metadata is stored in netCDF format as attributes. Attributes can be defined as 
 
 ## Version
 
-This is the second version of this specification. V1.0 is described here 
+This is the second version of this specification. 
 
 ## Schematic
 
