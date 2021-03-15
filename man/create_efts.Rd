@@ -26,7 +26,7 @@ You may use \code{\link{create_global_attributes}} as a starting template.}
 
 \item{optional_vars}{a data frame defining optional netCDF variables. For a templated default see 
 \code{\link{default_optional_variable_definitions_v2_0}} and 
-\url{https://github.com/jmp75/efts/blob/107c553045a37e6ef36b2eababf6a299e7883d50/docs/netcdf_for_water_forecasting.md#optional-variables}}
+\url{https://github.com/csiro-hydroinformatics/efts/blob/107c553045a37e6ef36b2eababf6a299e7883d50/docs/netcdf_for_water_forecasting.md#optional-variables}}
 
 \item{lead_length}{length of the lead forecasting time series.}
 
@@ -47,7 +47,7 @@ Creates a EftsDataSet for write access to a netCDF EFTS data set
 # a data set conforming with the conventions devised for 
 # ensemble streamflow forecast you will need to 
 # follow the additional guidelines at 
-# https://github.com/jmp75/efts/blob/master/docs/netcdf_for_water_forecasting.md
+# https://github.com/csiro-hydroinformatics/efts/blob/master/docs/netcdf_for_water_forecasting.md
 
 fname <- tempfile()
 

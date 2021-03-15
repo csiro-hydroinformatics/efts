@@ -17,8 +17,8 @@ Authors@R: c(
     person("David", "Robertson", role = c("aut")),
     person("James", "Bennett", role = c("aut"))
     )
-URL: https://github.com/jmp75/efts
-BugReports: https://github.com/jmp75/efts/issues
+URL: https://github.com/csiro-hydroinformatics/efts
+BugReports: https://github.com/csiro-hydroinformatics/efts/issues
 VignetteBuilder: knitr
 Depends: R (>= 3.1)
 Imports:

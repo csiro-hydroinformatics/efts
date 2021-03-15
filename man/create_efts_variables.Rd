@@ -20,7 +20,7 @@ create_efts_variables(data_var_def, time_dim_info, num_stations,
 
 \item{optional_vars}{a data frame defining optional netCDF variables. For a templated default see 
 \code{\link{default_optional_variable_definitions_v2_0}} and 
-\url{https://github.com/jmp75/efts/blob/107c553045a37e6ef36b2eababf6a299e7883d50/docs/netcdf_for_water_forecasting.md#optional-variables}}
+\url{https://github.com/csiro-hydroinformatics/efts/blob/107c553045a37e6ef36b2eababf6a299e7883d50/docs/netcdf_for_water_forecasting.md#optional-variables}}
 
 \item{lead_time_tstep}{string specifying the time step of the forecast lead length.}
 }

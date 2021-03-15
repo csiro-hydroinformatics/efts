@@ -22,6 +22,6 @@ create_global_attributes(title, institution, source, catchment, comment,
 }
 \description{
 The conventions require a set of global attributes to be present, 
-see \url{https://github.com/jmp75/efts/blob/master/docs/netcdf_for_water_forecasting.md#global-attributes}.
+see \url{https://github.com/csiro-hydroinformatics/efts/blob/master/docs/netcdf_for_water_forecasting.md#global-attributes}.
 This function is recommended to define these attributes.
 }

@@ -26,7 +26,7 @@ knitr::opts_chunk$set(
 
 **efts** is an R package to access ensemble forecast time series stored (EFTS) in netCDF format. It offers convenient functions to access time series, hiding the bug-prone details of netCDF array manipulations. 
 
-EFTS netCDF data sets follow the schema described at [this location](https://github.com/jmp75/efts/blob/master/docs/netcdf_for_water_forecasting.md) at the time of writing.
+EFTS netCDF data sets follow the schema described at [this location](https://github.com/csiro-hydroinformatics/efts/blob/master/docs/netcdf_for_water_forecasting.md) at the time of writing.
 
 The package comes with API documentation, as well as the present vignette. You can access both navigating via
 

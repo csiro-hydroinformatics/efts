@@ -11,7 +11,7 @@ a data frame
 }
 \description{
 Provide a template definition of optional geolocation and geographic variables x, y, area and elevation. 
-See \url{https://github.com/jmp75/efts/blob/107c553045a37e6ef36b2eababf6a299e7883d50/docs/netcdf_for_water_forecasting.md#optional-variables}.
+See \url{https://github.com/csiro-hydroinformatics/efts/blob/107c553045a37e6ef36b2eababf6a299e7883d50/docs/netcdf_for_water_forecasting.md#optional-variables}.
 }
 \seealso{
 See

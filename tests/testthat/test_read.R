@@ -86,7 +86,7 @@ doTests <- function(lead_time_tstep = "hours", time_step = "hours since", time_s
 
 tested_fcast_issue_time <- timeAxisStart + lubridate::ddays(2L)
 
-# Covers https://github.com/jmp75/efts/issues/6
+# Covers https://github.com/csiro-hydroinformatics/efts/issues/6
 tempNcFname <- tempfile()
 tryCatch(doTests(lead_time_tstep = "days", time_step = "days since", time_step_delta = 1L, lead_time_step_start_offset = 1L, lead_time_step_delta = 1L), finally = function() {
   if (file.exists(tempNcFname)) 

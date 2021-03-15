@@ -20,7 +20,7 @@ latter.
 
 **efts** is designed to handle netCDF data following the [NetCDF for
 Water Forecasting Conventions
-v2.0](https://github.com/jmp75/efts/blob/master/docs/netcdf_for_water_forecasting.md)
+v2.0](https://github.com/csiro-hydroinformatics/efts/blob/master/docs/netcdf_for_water_forecasting.md)
 
 ## Installation
 

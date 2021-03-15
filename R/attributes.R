@@ -63,7 +63,7 @@ pad_global_attribute <- function(nc, attribute_name, attribute_value, sep = "\n"
 #' Define a set of global attributes for netCDF files.
 #'
 #' The conventions require a set of global attributes to be present, 
-#' see \url{https://github.com/jmp75/efts/blob/master/docs/netcdf_for_water_forecasting.md#global-attributes}.
+#' see \url{https://github.com/csiro-hydroinformatics/efts/blob/master/docs/netcdf_for_water_forecasting.md#global-attributes}.
 #' This function is recommended to define these attributes.
 #'
 #' @param title text, a succinct description of what is in the dataset

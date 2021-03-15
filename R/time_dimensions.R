@@ -93,7 +93,7 @@ create_time_info <- function(from, n, time_step = "hours since", time_step_delta
 #'
 get_start_date <- function(time_units, time_zone = "UTC") {
 
-  # temporary work around https://github.com/jmp75/efts/issues/3
+  # temporary work around https://github.com/csiro-hydroinformatics/efts/issues/3
   udu <- stringr::str_split(time_units, pattern = ' +')[[1]]
   s <- paste(udu[3], udu[4], sep='T')
   dt <- ymd_hms(s)

@@ -70,7 +70,7 @@ create_variable_definition_dataframe <- function(variable_names, long_names = va
 #' Provide a template definition of optional geolocation variables
 #'
 #' Provide a template definition of optional geolocation and geographic variables x, y, area and elevation. 
-#' See \url{https://github.com/jmp75/efts/blob/107c553045a37e6ef36b2eababf6a299e7883d50/docs/netcdf_for_water_forecasting.md#optional-variables}.
+#' See \url{https://github.com/csiro-hydroinformatics/efts/blob/107c553045a37e6ef36b2eababf6a299e7883d50/docs/netcdf_for_water_forecasting.md#optional-variables}.
 #'
 #' @export
 #' @return a data frame
@@ -145,7 +145,7 @@ create_variable_definitions <- function(dframe) {
 
 create_mandatory_vardefs <- function(station_dim, str_dim, ensemble_dim, lead_time_dim, lead_time_tstep = "hours") {
 
-  # https://github.com/jmp75/efts/blob/107c553045a37e6ef36b2eababf6a299e7883d50/docs/netcdf_for_water_forecasting.md#mandatory-variables
+  # https://github.com/csiro-hydroinformatics/efts/blob/107c553045a37e6ef36b2eababf6a299e7883d50/docs/netcdf_for_water_forecasting.md#mandatory-variables
   # float time(time)
   # int station_id(station)
   # char station_name(strLen, station)
@@ -175,7 +175,7 @@ create_mandatory_vardefs <- function(station_dim, str_dim, ensemble_dim, lead_ti
 }
 
 create_optional_vardefs <- function(station_dim, vars_def = default_optional_variable_definitions_v2_0()) {
-  # https://github.com/jmp75/efts/blob/107c553045a37e6ef36b2eababf6a299e7883d50/docs/netcdf_for_water_forecasting.md#mandatory-variables
+  # https://github.com/csiro-hydroinformatics/efts/blob/107c553045a37e6ef36b2eababf6a299e7883d50/docs/netcdf_for_water_forecasting.md#mandatory-variables
   vars_def$rownum <- 1:nrow(vars_def)
   f <- function(vd) {
     ncdf4::ncvar_def(vd$name, 
@@ -198,7 +198,7 @@ create_optional_vardefs <- function(station_dim, vars_def = default_optional_var
 #' @param ensemble_length number of ensembles, i.e. number of forecasts for each point on the main time axis of the data set
 #' @param optional_vars a data frame defining optional netCDF variables. For a templated default see 
 #' \code{\link{default_optional_variable_definitions_v2_0}} and 
-#' \url{https://github.com/jmp75/efts/blob/107c553045a37e6ef36b2eababf6a299e7883d50/docs/netcdf_for_water_forecasting.md#optional-variables}
+#' \url{https://github.com/csiro-hydroinformatics/efts/blob/107c553045a37e6ef36b2eababf6a299e7883d50/docs/netcdf_for_water_forecasting.md#optional-variables}
 #' @param lead_time_tstep string specifying the time step of the forecast lead length.
 #' @seealso See
 #'    \code{\link{create_efts}} for examples

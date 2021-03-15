@@ -53,7 +53,7 @@ open_efts <- function(ncfile, writein = FALSE) {
 #' @param lead_length length of the lead forecasting time series.
 #' @param optional_vars a data frame defining optional netCDF variables. For a templated default see 
 #' \code{\link{default_optional_variable_definitions_v2_0}} and 
-#' \url{https://github.com/jmp75/efts/blob/107c553045a37e6ef36b2eababf6a299e7883d50/docs/netcdf_for_water_forecasting.md#optional-variables}
+#' \url{https://github.com/csiro-hydroinformatics/efts/blob/107c553045a37e6ef36b2eababf6a299e7883d50/docs/netcdf_for_water_forecasting.md#optional-variables}
 #' @param lead_time_tstep string specifying the time step of the forecast lead length.
 #' @param ensemble_length number of ensembles, i.e. number of forecasts for each point on the main time axis of the data set
 #' @examples
@@ -63,7 +63,7 @@ open_efts <- function(ncfile, writein = FALSE) {
 #' # a data set conforming with the conventions devised for 
 #' # ensemble streamflow forecast you will need to 
 #' # follow the additional guidelines at 
-#' # https://github.com/jmp75/efts/blob/master/docs/netcdf_for_water_forecasting.md
+#' # https://github.com/csiro-hydroinformatics/efts/blob/master/docs/netcdf_for_water_forecasting.md
 #'
 #' fname <- tempfile()
 #' 
@@ -279,7 +279,7 @@ createSchema <- function(fname, varDefs, data_var_definitions, nc_attributes, op
 
   ## Add global attributes
   ncdf4::ncatt_put(nc, 0, "STF_convention_version", 2)
-  ncdf4::ncatt_put(nc, 0, "STF_nc_spec", "https://github.com/jmp75/efts/blob/107c553045a37e6ef36b2eababf6a299e7883d50/docs/netcdf_for_water_forecasting.md")
+  ncdf4::ncatt_put(nc, 0, "STF_nc_spec", "https://github.com/csiro-hydroinformatics/efts/blob/107c553045a37e6ef36b2eababf6a299e7883d50/docs/netcdf_for_water_forecasting.md")
   ncdf4::ncatt_put(nc, 0, "history", 
     paste( 
       as.character(lubridate::now(tzone="UTC")),
