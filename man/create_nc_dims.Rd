@@ -4,8 +4,13 @@
 \alias{create_nc_dims}
 \title{Creates dimensions for a netCDF EFTS data set}
 \usage{
-create_nc_dims(time_dim_info, str_len = 30, lead_length = 1,
-  ensemble_length = 1, num_stations = 1)
+create_nc_dims(
+  time_dim_info,
+  str_len = 30,
+  lead_length = 1,
+  ensemble_length = 1,
+  num_stations = 1
+)
 }
 \arguments{
 \item{time_dim_info}{a list with the units and values defining the time dimension of the data set}

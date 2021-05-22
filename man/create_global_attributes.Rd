@@ -4,8 +4,14 @@
 \alias{create_global_attributes}
 \title{Define a set of global attributes for netCDF files.}
 \usage{
-create_global_attributes(title, institution, source, catchment, comment,
-  strict = FALSE)
+create_global_attributes(
+  title,
+  institution,
+  source,
+  catchment,
+  comment,
+  strict = FALSE
+)
 }
 \arguments{
 \item{title}{text, a succinct description of what is in the dataset}

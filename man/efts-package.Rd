@@ -13,8 +13,8 @@ Accessing ensemble forecast time series (EFTS) data set stored in netCDF formats
 Package: \tab efts\cr
 Type: \tab Package\cr
 Version: \tab 0.9-1\cr
-Date: \tab 2019-02-06\cr
-Release Notes: \tab Facilities and stricter checks for compliance with netCDF EFTS conventions. Fixes for addressing feedback from previous CRAN submission. \cr
+Date: \tab 2021-04-18\cr
+Release Notes: \tab Add dependency on rmarkdown now required to build. \cr
 License: \tab GPL-2 \cr
 }
 
@@ -23,10 +23,12 @@ See \code{\link{open_efts}} \code{\link{create_efts}} for code examples to read/
 
 This work was carried out in the CSIRO Water for Healthy Country National Research Flagship and was 
 supported by the Water Information Research and Development Alliance between CSIRO and the Australian 
-Bureau of Meteorology.
+Bureau of Meteorology. 
+
 
 \tabular{lll}{
 Version \tab Date \tab Notes \cr
+0.9.1 \tab 2019-02-06 \tab Workaround a possible change of behavior in lubridate and/or udunits that cause issues with date time arithmetics. Remove assumption that lead_time dimension is in hours. \cr
 0.9.0 \tab 2018-04-22 \tab Facilities and stricter checks for compliance with netCDF EFTS conventions. Fixes for addressing feedback from previous CRAN submission. \cr
 0.8.0 \tab 2018-04-08 \tab Improve and test subsetting and reordering of multidimensional arrays retrieved via ncdf4. Remove issues in 'R CMD check' for first CRAN submission \cr
 0.7.0 \tab 2018-02-14 \tab Initial commit to github \cr

@@ -50,8 +50,7 @@ class(rain_dat)
 #> [1] "efts"
 ```
 
-`rain_dat` has methods to discover and retrieve data in the
-file.
+`rain_dat` has methods to discover and retrieve data in the file.
 
 ``` r
 cat(sprintf("This rainfall data set has data for %s stations, the lead time dimension is '%s' because this is not forecast data\n", rain_dat$get_station_count(),

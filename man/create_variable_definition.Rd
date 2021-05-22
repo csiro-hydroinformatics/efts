@@ -4,9 +4,15 @@
 \alias{create_variable_definition}
 \title{Create a variable definition}
 \usage{
-create_variable_definition(name, longname = "", units = "mm",
-  missval = -9999, precision = "double", dim_type = "4",
-  var_attribute = create_var_attribute_definition())
+create_variable_definition(
+  name,
+  longname = "",
+  units = "mm",
+  missval = -9999,
+  precision = "double",
+  dim_type = "4",
+  var_attribute = create_var_attribute_definition()
+)
 }
 \arguments{
 \item{name}{variable name}

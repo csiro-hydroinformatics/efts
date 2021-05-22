@@ -4,11 +4,13 @@
 \alias{create_var_attribute_definition}
 \title{Create variable attribute definition}
 \usage{
-create_var_attribute_definition(type = 2L,
+create_var_attribute_definition(
+  type = 2L,
   type_description = "accumulated over the preceding interval",
   dat_type = "der",
   dat_type_description = "AWAP data interpolated from observations",
-  location_type = "Point")
+  location_type = "Point"
+)
 }
 \arguments{
 \item{type}{A data type identifier, as a coded description.}

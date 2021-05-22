@@ -1,3 +1,14 @@
+Version 0.9.2
+=============
+
+### Fixes
+
+Fixing the upcoming problem: The 'rmarkdown' package should be declared as a dependency of the
+'validate' package (e.g., in the 'Suggests' field of DESCRIPTION),
+because the latter contains vignette(s) built with the 'rmarkdown'
+package. Please see https://github.com/yihui/knitr/issues/1864 for
+more information.
+
 Version 0.9.1
 =============
 

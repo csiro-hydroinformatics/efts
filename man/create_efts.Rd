@@ -4,9 +4,18 @@
 \alias{create_efts}
 \title{Creates a EftsDataSet for write access to a netCDF EFTS data set}
 \usage{
-create_efts(fname, time_dim_info, data_var_definitions, stations_ids,
-  station_names = NULL, nc_attributes = NULL, optional_vars = NULL,
-  lead_length = 48, ensemble_length = 50, lead_time_tstep = "hours")
+create_efts(
+  fname,
+  time_dim_info,
+  data_var_definitions,
+  stations_ids,
+  station_names = NULL,
+  nc_attributes = NULL,
+  optional_vars = NULL,
+  lead_length = 48,
+  ensemble_length = 50,
+  lead_time_tstep = "hours"
+)
 }
 \arguments{
 \item{fname}{file name to create to. The file must not exist already.}

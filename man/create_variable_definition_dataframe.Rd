@@ -4,10 +4,16 @@
 \alias{create_variable_definition_dataframe}
 \title{Create a variables definition data frame}
 \usage{
-create_variable_definition_dataframe(variable_names,
-  long_names = variable_names, standard_names = variable_names,
-  units = "mm", missval = -9999, precision = "double",
-  dimensions = 4L, var_attributes = create_var_attribute_definition())
+create_variable_definition_dataframe(
+  variable_names,
+  long_names = variable_names,
+  standard_names = variable_names,
+  units = "mm",
+  missval = -9999,
+  precision = "double",
+  dimensions = 4L,
+  var_attributes = create_var_attribute_definition()
+)
 }
 \arguments{
 \item{variable_names}{character vector, names of the variables}

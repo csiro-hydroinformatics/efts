@@ -4,8 +4,13 @@
 \alias{create_time_info}
 \title{Helper function to create the definition of the time dimension for use in a netCDF file}
 \usage{
-create_time_info(from, n, time_step = "hours since",
-  time_step_delta = 1L, tzoffset)
+create_time_info(
+  from,
+  n,
+  time_step = "hours since",
+  time_step_delta = 1L,
+  tzoffset
+)
 }
 \arguments{
 \item{from}{the start date of the time axis}
