@@ -1,5 +1,5 @@
 library(devtools)
-load_all('/home/per202/src/github_jm/efts')
+load_all('/home/xxxyyy/src/github_jm/efts')
 
 # id <- as.character(zoo::index(d))
 # s <- which(id == "2006-01-01 00:00:00")

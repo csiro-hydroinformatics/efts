@@ -3,8 +3,8 @@
 #' \tabular{ll}{
 #' Package: \tab efts\cr
 #' Type: \tab Package\cr
-#' Version: \tab 0.9-0\cr
-#' Date: \tab 2018-04-22\cr
+#' Version: \tab 0.9-1\cr
+#' Date: \tab 2019-02-06\cr
 #' Release Notes: \tab Facilities and stricter checks for compliance with netCDF EFTS conventions. Fixes for addressing feedback from previous CRAN submission. \cr
 #' License: \tab GPL-2 \cr
 #' }
@@ -19,6 +19,7 @@
 #'
 #' \tabular{lll}{
 #' Version \tab Date \tab Notes \cr
+#' 0.9.0 \tab 2018-04-22 \tab Facilities and stricter checks for compliance with netCDF EFTS conventions. Fixes for addressing feedback from previous CRAN submission. \cr
 #' 0.8.0 \tab 2018-04-08 \tab Improve and test subsetting and reordering of multidimensional arrays retrieved via ncdf4. Remove issues in 'R CMD check' for first CRAN submission \cr
 #' 0.7.0 \tab 2018-02-14 \tab Initial commit to github \cr
 #' 0.6.x \tab 2017 \tab Non public releases of a package originally used only for unit test purposes \cr
