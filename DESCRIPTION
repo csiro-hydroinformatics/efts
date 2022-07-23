@@ -17,6 +17,8 @@ Authors@R: c(
     person("David", "Robertson", role = c("aut")),
     person("James", "Bennett", role = c("aut"))
     )
+Author: Jean-Michel Perraud [aut, cre]
+Maintainer: Jean-Michel Perraud <per202@csiro.au>
 URL: https://github.com/jmp75/efts
 BugReports: https://github.com/jmp75/efts/issues
 VignetteBuilder: knitr
